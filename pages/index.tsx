@@ -54,8 +54,11 @@ export default function Home({ videos }) {
             gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
           />
         </div>
-        <Link href="/blog">
-          <a className="flex mt-8 text-gray-600 dark:text-gray-400 leading-7 rounded-lg hover:text-gray-800 dark:hover:text-gray-200 transition-all h-6">
+        <Link
+          href="/blog"
+          className="flex mt-8 text-gray-600 dark:text-gray-400 leading-7 rounded-lg hover:text-gray-800 dark:hover:text-gray-200 transition-all h-6"
+        >
+          <>
             Read all posts
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +74,7 @@ export default function Home({ videos }) {
                 d="M17.5 12h-15m11.667-4l3.333 4-3.333-4zm3.333 4l-3.333 4 3.333-4z"
               />
             </svg>
-          </a>
+          </>
         </Link>
         <h3 className="font-bold text-2xl md:text-4xl tracking-tight mb-4 mt-16 text-black dark:text-white">
           Learn React & Next.js

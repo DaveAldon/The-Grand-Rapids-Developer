@@ -2,8 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import Container from 'components/Container';
-import avatar from 'public/avatar.jpg';
-import avatarBW from 'public/avatar-bw.jpg';
 
 export default function About() {
   return (
@@ -22,10 +20,7 @@ export default function About() {
               GitHub: <a href="https://github.com/leerob">@leerob</a>
             </li>
             <li>
-              Website:{' '}
-              <Link href="https://leerob.io">
-                <a>https://leerob.io</a>
-              </Link>
+              Website: <Link href="https://leerob.io">https://leerob.io</Link>
             </li>
             <li>
               LinkedIn:{' '}
@@ -79,7 +74,7 @@ export default function About() {
                 alt="Lee Robinson headshot"
                 width={400}
                 quality={100}
-                src={avatar}
+                src={'https://i.pravatar.cc/300'}
                 className="rounded-md"
               />
             </a>
@@ -88,7 +83,7 @@ export default function About() {
                 alt="Lee Robinson headshot"
                 width={400}
                 quality={100}
-                src={avatarBW}
+                src={'https://i.pravatar.cc/300'}
                 className="rounded-md"
               />
             </a>
