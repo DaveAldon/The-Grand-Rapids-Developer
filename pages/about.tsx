@@ -24,7 +24,7 @@ export default function About() {
             <li>
               Website:{' '}
               <Link href="https://leerob.io">
-                https://leerob.io
+                <a>https://leerob.io</a>
               </Link>
             </li>
             <li>
