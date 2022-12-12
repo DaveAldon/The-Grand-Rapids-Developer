@@ -1,23 +1,29 @@
 import Image from 'next/image';
 import { parseISO, format } from 'date-fns';
-import { PropsWithChildren, Suspense } from 'react';
 
 import Container from 'components/Container';
 import Subscribe from 'components/Subscribe';
 import ViewCounter from 'components/ViewCounter';
-import { Post } from 'lib/types';
-import { urlForImage } from 'lib/sanity';
+import type { PropsWithChildren } from 'react';
+import type { Blog } from 'contentlayer/generated';
+
+const editUrl = (slug) =>
+  `https://github.com/leerob/leerob.io/edit/main/data/blog/${slug}.mdx`;
+const discussUrl = (slug) =>
+  `https://mobile.twitter.com/search?q=${encodeURIComponent(
+    `https://leerob.io/blog/${slug}`
+  )}`;
 
 export default function BlogLayout({
   children,
   post
-}: PropsWithChildren<{ post: Post }>) {
+}: PropsWithChildren<{ post: Blog }>) {
   return (
     <Container
       title={`${post.title} – Lee Robinson`}
-      description={post.excerpt}
-      image={urlForImage(post.coverImage).url()}
-      date={new Date(post.date).toISOString()}
+      description={post.summary}
+      image={`https://leerob.io${post.image}`}
+      date={new Date(post.publishedAt).toISOString()}
       type="article"
     >
       <article className="flex flex-col items-start justify-center w-full max-w-2xl mx-auto mb-16">
@@ -30,48 +36,43 @@ export default function BlogLayout({
               alt="Lee Robinson"
               height={24}
               width={24}
-              sizes="20vw"
               src="/avatar.jpg"
               className="rounded-full"
             />
             <p className="ml-2 text-sm text-gray-700 dark:text-gray-300">
               {'Lee Robinson / '}
-              {format(parseISO(post.date), 'MMMM dd, yyyy')}
+              {format(parseISO(post.publishedAt), 'MMMM dd, yyyy')}
             </p>
           </div>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 min-w-32 md:mt-0">
-            {post.readingTime}
+            {post.readingTime.text}
             {` • `}
             <ViewCounter slug={post.slug} />
           </p>
         </div>
-        <Suspense fallback={null}>
-          <div className="w-full mt-4 prose dark:prose-dark max-w-none">
-            {children}
-          </div>
-          <div className="mt-8">
-            <Subscribe />
-          </div>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
-            <a
-              href={`https://mobile.twitter.com/search?q=${encodeURIComponent(
-                `https://leerob.io/blog/${post.slug}`
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {'Discuss on Twitter'}
-            </a>
-            {` • `}
-            <a
-              href="https://github.com/leerob/leerob.io/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {'Suggest Change'}
-            </a>
-          </div>
-        </Suspense>
+        <div className="w-full mt-4 prose dark:prose-dark max-w-none">
+          {children}
+        </div>
+        <div className="mt-8">
+          <Subscribe />
+        </div>
+        <div className="text-sm text-gray-700 dark:text-gray-300">
+          <a
+            href={discussUrl(post.slug)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {'Discuss on Twitter'}
+          </a>
+          {` • `}
+          <a
+            href={editUrl(post.slug)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {'Edit on GitHub'}
+          </a>
+        </div>
       </article>
     </Container>
   );

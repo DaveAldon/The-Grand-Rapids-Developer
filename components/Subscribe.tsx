@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import Link from 'next/link';
 import useSWR from 'swr';
 
 import fetcher from 'lib/fetcher';
@@ -17,8 +18,13 @@ export default function Subscribe() {
     e.preventDefault();
     setForm({ state: Form.Loading });
 
-    const email = inputEl.current.value;
-    const res = await fetch(`/api/subscribe?email=${email}`, {
+    const res = await fetch('/api/subscribe', {
+      body: JSON.stringify({
+        email: inputEl.current.value
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST'
     });
 

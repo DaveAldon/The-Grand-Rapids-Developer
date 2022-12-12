@@ -2,8 +2,7 @@ import Image from 'next/image';
 
 import Container from 'components/Container';
 import type { PropsWithChildren } from 'react';
-import { Snippet } from 'lib/types';
-import { urlForImage } from 'lib/sanity';
+import type { Snippet } from 'contentlayer/generated';
 
 export default function SnippetLayout({
   children,
@@ -29,7 +28,7 @@ export default function SnippetLayout({
               alt={snippet.title}
               height={48}
               width={48}
-              src={urlForImage(snippet.logo).url()}
+              src={`/logos/${snippet.logo}`}
               className="rounded-full"
             />
           </div>

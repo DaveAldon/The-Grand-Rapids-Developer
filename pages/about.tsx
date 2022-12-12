@@ -22,7 +22,10 @@ export default function About() {
               GitHub: <a href="https://github.com/leerob">@leerob</a>
             </li>
             <li>
-              Website: <Link href="https://leerob.io">https://leerob.io</Link>
+              Website:{' '}
+              <Link href="https://leerob.io">
+                <a>https://leerob.io</a>
+              </Link>
             </li>
             <li>
               LinkedIn:{' '}
@@ -33,40 +36,40 @@ export default function About() {
           </ul>
           <h2>Bio</h2>
           <h3>Job Title</h3>
-          <p>Lee Robinson, VP of Developer Experience at Vercel</p>
+          <p>Lee Robinson, Director of Developer Relations at Vercel</p>
           <h3>Long, 3rd Person</h3>
           <p>
-            Lee Robinson is the VP of Developer Experience at{' '}
+            Lee Robinson is the Director of Developer Relations at{' '}
             <a href="http://vercel.com/">Vercel</a>, where he helps developers
-            build a faster web and leads the Next.js community. He leads the
-            community for the React framework Next.js and is an open-source
-            contributor. An educator, writer, and speaker, Lee has created
-            courses on React, Next.js, and web development.
+            build a faster web and leads the Next.js community. Prior to that,
+            Lee was a Senior Software Engineer focused on the frontend. An
+            educator, writer, and speaker, Lee has also created extensive
+            courses on React and Next.js.
           </p>
           <h3>Long, 1st Person</h3>
           <p>
-            Hey, I'm Lee. I'm the VP of Developer Experience at{' '}
+            Hey, I'm Lee. I lead Developer Relations at{' '}
             <a href="https://vercel.com/">Vercel</a>, where my team helps
             developers build a faster web. I'm a Next.js contributor and help
-            lead our open-source communities. I'm passionate about frontend
+            lead our open-source communities. I've passionate about frontend
             development and have created courses on React, Next.js, and web
             development. I'm an advisor and investor in early stage startups.
           </p>
           <h3>Short, 3rd Person</h3>
           <p>
-            Lee Robinson is the VP of Developer Experience at{' '}
+            Lee Robinson is the Director of Developer Relations at{' '}
             <a href="http://vercel.com/">Vercel</a>, where he helps developers
             build a faster web.
           </p>
           <h3>Short, 1st Person</h3>
           <p>
-            Hey, I'm Lee. I'm the VP of Developer Experience at{' '}
+            Hey, I'm Lee. I lead Developer Relations at{' '}
             <a href="https://vercel.com/">Vercel</a>, where my team helps
             developers build a faster web.
           </p>
           <h3>Education</h3>
           <p>
-            Lee Robinson graduated from Iowa State University with a B.S. in
+            Lee Robinson graduated from Iowa State University with a BS in
             Computer Engineering.
           </p>
           <h2>Headshots</h2>

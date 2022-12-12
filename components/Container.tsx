@@ -13,16 +13,17 @@ function NavItem({ href, text }) {
   const isActive = router.asPath === href;
 
   return (
-    <NextLink
-      href={href}
-      className={cn(
-        isActive
-          ? 'font-semibold text-gray-800 dark:text-gray-200'
-          : 'font-normal text-gray-600 dark:text-gray-400',
-        'hidden md:inline-block p-1 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-all'
-      )}
-    >
-      <span className="capsize">{text}</span>
+    <NextLink href={href}>
+      <a
+        className={cn(
+          isActive
+            ? 'font-semibold text-gray-800 dark:text-gray-200'
+            : 'font-normal text-gray-600 dark:text-gray-400',
+          'hidden md:inline-block p-1 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-all'
+        )}
+      >
+        <span className="capsize">{text}</span>
+      </a>
     </NextLink>
   );
 }
@@ -39,7 +40,7 @@ export default function Container(props) {
   const meta = {
     title: 'Lee Robinson – Developer, writer, creator.',
     description: `Front-end developer, JavaScript enthusiast, and course creator.`,
-    image: 'https://leerob.io/static/images/lee-banner.png',
+    image: 'https://leerob.io/static/images/banner.png',
     type: 'website',
     ...customMeta
   };

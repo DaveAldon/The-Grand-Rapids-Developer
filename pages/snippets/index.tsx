@@ -1,9 +1,8 @@
+import { allSnippets } from 'contentlayer/generated';
 import Container from 'components/Container';
 import FunctionCard from 'components/FunctionCard';
-import { InferGetStaticPropsType } from 'next';
-import { allSnippetsQuery } from 'lib/queries';
-import { getClient } from 'lib/sanity-server';
-import { Snippet } from 'lib/types';
+import { pick } from 'contentlayer/client';
+import type { InferGetStaticPropsType } from 'next';
 
 export default function Snippets({
   snippets
@@ -39,8 +38,10 @@ export default function Snippets({
   );
 }
 
-export async function getStaticProps({ preview = false }) {
-  const snippets: Snippet[] = await getClient(preview).fetch(allSnippetsQuery);
+export function getStaticProps() {
+  const snippets = allSnippets.map((snippet) =>
+    pick(snippet, ['slug', 'title', 'logo', 'description'])
+  );
 
   return { props: { snippets } };
 }
