@@ -20,13 +20,16 @@ export default function About() {
               GitHub: <a href="https://github.com/leerob">@leerob</a>
             </li>
             <li>
-              Website: <Link href="https://leerob.io">https://leerob.io</Link>
+              Website:{' '}
+              <Link href="https://leerob.io">
+                <a>https://leerob.io</a>
+              </Link>
             </li>
             <li>
               LinkedIn:{' '}
-              <a href="https://www.linkedin.com/in/leeerob/">
-                https://www.linkedin.com/in/leeerob
-              </a>
+              <Link href="https://www.linkedin.com/in/leeerob/">
+                <a>https://www.linkedin.com/in/leeerob</a>
+              </Link>
             </li>
           </ul>
           <h2>Bio</h2>
@@ -73,6 +76,7 @@ export default function About() {
               <Image
                 alt="Lee Robinson headshot"
                 width={400}
+                height={400}
                 quality={100}
                 src={'https://i.pravatar.cc/300'}
                 className="rounded-md"
@@ -82,6 +86,7 @@ export default function About() {
               <Image
                 alt="Lee Robinson headshot"
                 width={400}
+                height={400}
                 quality={100}
                 src={'https://i.pravatar.cc/300'}
                 className="rounded-md"

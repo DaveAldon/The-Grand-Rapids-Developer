@@ -54,7 +54,7 @@ export default function MobileMenu() {
             style={{ transitionDelay: '150ms' }}
           >
             <Link href="/" className="flex w-auto pb-4">
-              Home
+              <a>Home</a>
             </Link>
           </li>
           <li
@@ -62,7 +62,7 @@ export default function MobileMenu() {
             style={{ transitionDelay: '175ms' }}
           >
             <Link href="/guestbook" className="flex w-auto pb-4">
-              Guestbook
+              <a>Guestbook</a>
             </Link>
           </li>
           <li
@@ -70,7 +70,7 @@ export default function MobileMenu() {
             style={{ transitionDelay: '200ms' }}
           >
             <Link href="/dashboard" className="flex w-auto pb-4">
-              Dashboard
+              <a>Dashboard</a>
             </Link>
           </li>
           <li
@@ -78,7 +78,7 @@ export default function MobileMenu() {
             style={{ transitionDelay: '250ms' }}
           >
             <Link href="/blog" className="flex w-auto pb-4">
-              Blog
+              <a>Blog</a>
             </Link>
           </li>
           <li
@@ -86,7 +86,7 @@ export default function MobileMenu() {
             style={{ transitionDelay: '300ms' }}
           >
             <Link href="/newsletter" className="flex w-auto pb-4">
-              Newsletter
+              <a>Newsletter</a>
             </Link>
           </li>
           <li
@@ -94,7 +94,7 @@ export default function MobileMenu() {
             style={{ transitionDelay: '325ms' }}
           >
             <Link href="/tweets" className="flex w-auto pb-4">
-              Tweets
+              <a>Tweets</a>
             </Link>
           </li>
           <li
@@ -102,7 +102,7 @@ export default function MobileMenu() {
             style={{ transitionDelay: '350ms' }}
           >
             <Link href="/uses" className="flex w-auto pb-4">
-              Uses
+              <a>Uses</a>
             </Link>
           </li>
         </ul>

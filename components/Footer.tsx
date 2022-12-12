@@ -20,23 +20,24 @@ export default function Footer() {
       <NowPlaying />
       <div className="w-full max-w-2xl grid grid-cols-1 gap-4 pb-16 sm:grid-cols-3">
         <div className="flex flex-col space-y-4">
-          <Link
-            href="/"
-            className="text-gray-500 hover:text-gray-600 transition"
-          >
-            Home
+          <Link href="/">
+            <a>
+              <div className="text-gray-500 hover:text-gray-600 transition">
+                Home
+              </div>
+            </a>
           </Link>
-          <Link
-            href="/about"
-            className="text-gray-500 hover:text-gray-600 transition"
-          >
-            About
+          <Link href="/about">
+            <div className="text-gray-500 hover:text-gray-600 transition">
+              About
+            </div>
           </Link>
-          <Link
-            href="/newsletter"
-            className="text-gray-500 hover:text-gray-600 transition"
-          >
-            Newsletter
+          <Link href="/newsletter">
+            <a>
+              <div className="text-gray-500 hover:text-gray-600 transition">
+                Newsletter
+              </div>
+            </a>
           </Link>
         </div>
         <div className="flex flex-col space-y-4">
@@ -49,23 +50,26 @@ export default function Footer() {
           </ExternalLink>
         </div>
         <div className="flex flex-col space-y-4">
-          <Link
-            href="/uses"
-            className="text-gray-500 hover:text-gray-600 transition"
-          >
-            Uses
+          <Link href="/uses">
+            <a>
+              <div className="text-gray-500 hover:text-gray-600 transition">
+                Uses
+              </div>
+            </a>
           </Link>
-          <Link
-            href="/guestbook"
-            className="text-gray-500 hover:text-gray-600 transition"
-          >
-            Guestbook
+          <Link href="/guestbook">
+            <a>
+              <div className="text-gray-500 hover:text-gray-600 transition">
+                Guestbook
+              </div>
+            </a>
           </Link>
-          <Link
-            href="/tweets"
-            className="text-gray-500 hover:text-gray-600 transition"
-          >
-            Tweets
+          <Link href="/tweets">
+            <a>
+              <div className="text-gray-500 hover:text-gray-600 transition">
+                Tweets
+              </div>
+            </a>
           </Link>
         </div>
       </div>
