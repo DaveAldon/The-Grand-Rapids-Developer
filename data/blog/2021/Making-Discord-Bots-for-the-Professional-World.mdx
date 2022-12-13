@@ -7,23 +7,23 @@ image: 'https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd
 
 ![](https://static.wixstatic.com/media/e862a1_68c4053e01174bfbb11a7cd26c032cb8~mv2.png/v1/fill/w_740,h_494,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/e862a1_68c4053e01174bfbb11a7cd26c032cb8~mv2.png)
 
-Haven’t heard of Discord? It’s the de facto communication tool of the next generation, especially for video games, a myriad of growing communities, and now _Bravo LT_.
+Haven’t heard of Discord? It’s the de facto communication tool of the next generation, especially for video games, a myriad of growing communities. For those reasons, when I used to work for Bravo LT, we decided to use it for the business as well.
 
-We had a desire to have a place for our employees to continue internal team conversations, but also be able to have open-mic sessions or easy video calls. Additionally, we wanted a way to _retain_ non-employee contacts and grow a developer community. When we do a code camp, what better way to keep the energy afterwards than by having a place to keep the conversation going? If there are developers that have had a positive impact on Bravo LT, and we want to keep them in the loop, Discord is the way. So now that you know what Discord is doing for us, what’s a _Discord Bot?_
+We had a desire to have a place for our employees to continue internal team conversations, but also be able to have open-mic sessions or easy video calls. Additionally, we wanted a way to _retain_ non-employee contacts and grow a developer community. When we facilitated a code camp, what better way to keep the energy afterwards than by having a place to keep the conversation going? If there are developers that have had a positive impact on the community, and we want to keep them in the loop, Discord is the way. So now that you know what Discord is doing, what’s a _Discord Bot?_
 
 A Discord Bot is a custom application that interacts with Discord users through chat commands. They’re typically made to automate tasks, like server moderation, or easily and quickly provide information specific to an organization’s needs. The uses are virtually unlimited because they’re typically custom built from scratch.
 
 In this simpler case, I wanted to help make a few common tasks fully automated:
 
-1. The ability to quickly see what job postings are available at Bravo LT (and link to the job description pdf)
+1. The ability to quickly see what job postings were available at Bravo LT (and link to the job description pdf)
 
 ![](https://static.wixstatic.com/media/e862a1_2e94efce0f7e400b9479f2b1b8274131~mv2.png/v1/fill/w_538,h_353,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_2e94efce0f7e400b9479f2b1b8274131~mv2.png)
 
-2. Cosmetic role moderation needs to be user manageable
+2. Cosmetic role moderation needed to be user manageable
 
 ![](https://static.wixstatic.com/media/e862a1_4cd83e0bb7774f97949bb1ea0245ebba~mv2.png/v1/fill/w_437,h_435,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_4cd83e0bb7774f97949bb1ea0245ebba~mv2.png)
 
-3. We want the bot to produce a random dog gif on command
+3. We wanted the bot to produce a random dog gif on command
 
 ![](https://static.wixstatic.com/media/e862a1_2a6a2970b9084122ae78e6750a8dfa31~mv2.png/v1/fill/w_439,h_474,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_2a6a2970b9084122ae78e6750a8dfa31~mv2.png)
 
@@ -33,7 +33,7 @@ In order to accomplish this, I had to choose a tech stack, and a server for wher
 
 Discord’s API works with most major languages, as long as there’s a community library for it! I like to rely on more official things, so I chose Discord.js, their [Javascript-based API](https://discord.js.org/#/). But I also wanted to use **Typescript**, for various reasons, though mostly because I wanted **static typing** and **interfaces**. Also, Typescript is cooler.
 
-I chose [Heroku](https://www.heroku.com/) as the test server to run this off, because it’s free and simple, and you can use the _worker_ command so that it runs 24/7. But anything that can host a NodeJs application will do.
+I chose [Heroku](https://www.heroku.com/) at the time as the test server to run this off, because it was free and simple, and you could use the _worker_ command so that it runs 24/7. But anything that can host a NodeJs application will do.
 
 ## The Setup
 
@@ -64,7 +64,7 @@ return message.content.startsWith(this.prefix);
 }
 ```
 
-- We want to be able to add more commands easily, so whenever I make a new command class, I can just run my **index generator** (the commented code, [more about that pattern here](https://www.bravolt.com/post/generate-index-can-save-your-sanity)) in VS Code and it will automatically add the imports to a command **index.ts** file:
+- We wanted to be able to add more commands easily, so whenever I made a new command class, I could just run my **index generator** (the commented code, [more about that pattern here](https://www.bravolt.com/post/generate-index-can-save-your-sanity)) in VS Code and it would automatically add the imports to a command **index.ts** file:
 
 ```typescript
 //@index(['./*.ts(x)?','!**/*.*.*'], f => `export * from '${f.path}';`)

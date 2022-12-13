@@ -7,12 +7,12 @@ import ViewCounter from 'components/ViewCounter';
 import type { PropsWithChildren } from 'react';
 import type { Blog } from 'contentlayer/generated';
 
-const editUrl = (slug) =>
+/* const editUrl = (slug) =>
   `https://github.com/leerob/leerob.io/edit/main/data/blog/${slug}.mdx`;
 const discussUrl = (slug) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(
     `https://leerob.io/blog/${slug}`
-  )}`;
+  )}`; */
 
 export default function BlogLayout({
   children,
@@ -22,7 +22,7 @@ export default function BlogLayout({
     <Container
       title={`${post.title} – David Crawford`}
       description={post.summary}
-      image={`https://leerob.io${post.image}`}
+      image={`https://the-grand-rapids-developer.vercel.app${post.image}`}
       date={new Date(post.publishedAt).toISOString()}
       type="article"
     >
@@ -56,7 +56,7 @@ export default function BlogLayout({
         <div className="mt-8">
           <Subscribe />
         </div>
-        <div className="text-sm text-gray-700 dark:text-gray-300">
+        {/* <div className="text-sm text-gray-700 dark:text-gray-300">
           <a
             href={discussUrl(post.slug)}
             target="_blank"
@@ -72,7 +72,7 @@ export default function BlogLayout({
           >
             {'Edit on GitHub'}
           </a>
-        </div>
+        </div> */}
       </article>
     </Container>
   );
