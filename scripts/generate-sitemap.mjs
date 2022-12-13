@@ -23,11 +23,14 @@ async function generate() {
               .replace('data', '')
               .replace('.tsx', '')
               .replace('.mdx', '');
-            const route = path === '/index' ? '' : path;
+            const route =
+              path === '/index'
+                ? ''
+                : path.replace(/\/blog\/\d{4}\//, '/blog/');
 
             return `
               <url>
-                  <loc>${`https://leerob.io${route}`}</loc>
+                  <loc>${`https://the-grand-rapids-developer.vercel.app${route}`}</loc>
               </url>
             `;
           })

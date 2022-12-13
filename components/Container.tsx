@@ -38,9 +38,10 @@ export default function Container(props) {
   const { children, ...customMeta } = props;
   const router = useRouter();
   const meta = {
-    title: 'David Crawford – Developer, writer, creator.',
-    description: `Front-end developer, JavaScript enthusiast, and course creator.`,
-    image: 'https://leerob.io/static/images/banner.png',
+    title: 'David Crawford – Software Developer',
+    description: `Software Developer, writer, artist, creator.`,
+    image:
+      'https://media.licdn.com/dms/image/C5616AQFq00SLyxc58g/profile-displaybackgroundimage-shrink_350_1400/0/1630334856455?e=1676505600&v=beta&t=gccUn2DOokwI0SnxDjCu-KGz5xPsnkfN1s9TYi-f5yI',
     type: 'website',
     ...customMeta
   };
@@ -51,15 +52,21 @@ export default function Container(props) {
         <title>{meta.title}</title>
         <meta name="robots" content="follow, index" />
         <meta content={meta.description} name="description" />
-        <meta property="og:url" content={`https://leerob.io${router.asPath}`} />
-        <link rel="canonical" href={`https://leerob.io${router.asPath}`} />
+        <meta
+          property="og:url"
+          content={`https://https://the-grand-rapids-developer.vercel.app${router.asPath}`}
+        />
+        <link
+          rel="canonical"
+          href={`https://https://the-grand-rapids-developer.vercel.app${router.asPath}`}
+        />
         <meta property="og:type" content={meta.type} />
         <meta property="og:site_name" content="David Crawford" />
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@leeerob" />
+        <meta name="twitter:site" content="@GrandRapidsDev" />
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />

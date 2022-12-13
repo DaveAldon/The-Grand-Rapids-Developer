@@ -11,7 +11,8 @@ module.exports = withContentlayer({
       'i.scdn.co', // Spotify Album Art
       'pbs.twimg.com', // Twitter Profile Picture
       'i.pravatar.cc', // Random Profile Picture
-      'static.wixstatic.com' // Wix Images
+      'static.wixstatic.com', // Wix Images
+      'media.licdn.com' // LinkedIn Pictures
     ]
   },
   experimental: {
