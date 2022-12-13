@@ -28,9 +28,11 @@ export default function Footer() {
             </a>
           </Link>
           <Link href="/about">
-            <div className="text-gray-500 hover:text-gray-600 transition">
-              About
-            </div>
+            <a>
+              <div className="text-gray-500 hover:text-gray-600 transition">
+                About
+              </div>
+            </a>
           </Link>
           <Link href="/newsletter">
             <a>
@@ -41,23 +43,32 @@ export default function Footer() {
           </Link>
         </div>
         <div className="flex flex-col space-y-4">
-          <ExternalLink href="https://twitter.com/leeerob">
+          <Link href="/blog">
+            <a>
+              <div className="text-gray-500 hover:text-gray-600 transition">
+                Blog
+              </div>
+            </a>
+          </Link>
+          {/* <ExternalLink href="https://twitter.com/leeerob">
             Twitter
+          </ExternalLink> */}
+          <ExternalLink href="https://github.com/davealdon">
+            GitHub
           </ExternalLink>
-          <ExternalLink href="https://github.com/leerob">GitHub</ExternalLink>
-          <ExternalLink href="https://www.youtube.com/channel/UCZMli3czZnd1uoc1ShTouQw">
+          {/* <ExternalLink href="https://www.youtube.com/channel/UCZMli3czZnd1uoc1ShTouQw">
             YouTube
-          </ExternalLink>
+          </ExternalLink> */}
         </div>
         <div className="flex flex-col space-y-4">
-          <Link href="/uses">
+          {/* <Link href="/uses">
             <a>
               <div className="text-gray-500 hover:text-gray-600 transition">
                 Uses
               </div>
             </a>
-          </Link>
-          <Link href="/guestbook">
+          </Link> */}
+          {/* <Link href="/guestbook">
             <a>
               <div className="text-gray-500 hover:text-gray-600 transition">
                 Guestbook
@@ -70,7 +81,7 @@ export default function Footer() {
                 Tweets
               </div>
             </a>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </footer>

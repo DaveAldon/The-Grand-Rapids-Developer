@@ -4,7 +4,7 @@ import { allBlogs } from '../.contentlayer/generated/Blog/_index.mjs';
 
 async function generate() {
   const feed = new RSS({
-    title: 'Lee Robinson',
+    title: 'David Crawford',
     site_url: 'https://leerob.io',
     feed_url: 'https://leerob.io/feed.xml'
   });

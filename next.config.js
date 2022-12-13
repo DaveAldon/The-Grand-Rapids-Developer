@@ -10,7 +10,8 @@ module.exports = withContentlayer({
     domains: [
       'i.scdn.co', // Spotify Album Art
       'pbs.twimg.com', // Twitter Profile Picture
-      'i.pravatar.cc' // Random Profile Picture
+      'i.pravatar.cc', // Random Profile Picture
+      'static.wixstatic.com' // Wix Images
     ]
   },
   experimental: {
