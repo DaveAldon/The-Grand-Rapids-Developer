@@ -1,0 +1,92 @@
+---
+title: 'Making Discord Bots for the Professional World'
+publishedAt: '2021-10-11'
+summary: 'Haven’t heard of Discord? It’s the de facto communication tool of the next generation, especially for video games, a myriad of growing communities. This post goes over some ways you can make a practical bot for your community Discord server.'
+image: 'https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/e862a1_68c4053e01174bfbb11a7cd26c032cb8~mv2.png/v1/fill/w_740,h_494,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/e862a1_68c4053e01174bfbb11a7cd26c032cb8~mv2.png)
+
+Haven’t heard of Discord? It’s the de facto communication tool of the next generation, especially for video games, a myriad of growing communities, and now _Bravo LT_.
+
+We had a desire to have a place for our employees to continue internal team conversations, but also be able to have open-mic sessions or easy video calls. Additionally, we wanted a way to _retain_ non-employee contacts and grow a developer community. When we do a code camp, what better way to keep the energy afterwards than by having a place to keep the conversation going? If there are developers that have had a positive impact on Bravo LT, and we want to keep them in the loop, Discord is the way. So now that you know what Discord is doing for us, what’s a _Discord Bot?_
+
+A Discord Bot is a custom application that interacts with Discord users through chat commands. They’re typically made to automate tasks, like server moderation, or easily and quickly provide information specific to an organization’s needs. The uses are virtually unlimited because they’re typically custom built from scratch.
+
+In this simpler case, I wanted to help make a few common tasks fully automated:
+
+1. The ability to quickly see what job postings are available at Bravo LT (and link to the job description pdf)
+
+![](https://static.wixstatic.com/media/e862a1_2e94efce0f7e400b9479f2b1b8274131~mv2.png/v1/fill/w_538,h_353,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_2e94efce0f7e400b9479f2b1b8274131~mv2.png)
+
+2. Cosmetic role moderation needs to be user manageable
+
+![](https://static.wixstatic.com/media/e862a1_4cd83e0bb7774f97949bb1ea0245ebba~mv2.png/v1/fill/w_437,h_435,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_4cd83e0bb7774f97949bb1ea0245ebba~mv2.png)
+
+3. We want the bot to produce a random dog gif on command
+
+![](https://static.wixstatic.com/media/e862a1_2a6a2970b9084122ae78e6750a8dfa31~mv2.png/v1/fill/w_439,h_474,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_2a6a2970b9084122ae78e6750a8dfa31~mv2.png)
+
+In order to accomplish this, I had to choose a tech stack, and a server for where the bot could live. Discord doesn’t provide a one-stop-shop for your code. However, they do provide a great API, and easy GUI for bot creation and management.
+
+## Tech Stack
+
+Discord’s API works with most major languages, as long as there’s a community library for it! I like to rely on more official things, so I chose Discord.js, their [Javascript-based API](https://discord.js.org/#/). But I also wanted to use **Typescript**, for various reasons, though mostly because I wanted **static typing** and **interfaces**. Also, Typescript is cooler.
+
+I chose [Heroku](https://www.heroku.com/) as the test server to run this off, because it’s free and simple, and you can use the _worker_ command so that it runs 24/7. But anything that can host a NodeJs application will do.
+
+## The Setup
+
+I’m not going to go super in-depth about this project in this post, as there are a lot of examples out there for Discord Bot creation, and there’s my project as well which is in a public repository that you can play around with. So for this post, I just wanted to go over some major elements of how this works.
+
+- My bot’s private API key (provided by Discord whenever you create a bot) is in an **.env** file that’s naturally not checked into source control. I have an _.env.example_ file for you to look at to see the pattern. When published to Heroku, you can add your token on your app’s settings page:
+
+![](https://static.wixstatic.com/media/e862a1_c7f13ce9fb6f4d66ac660837047d44ea~mv2.png/v1/fill/w_389,h_81,al_c,lg_1,q_85,enc_auto/e862a1_c7f13ce9fb6f4d66ac660837047d44ea~mv2.png)
+
+- The **tsconfig.json** file is set up to convert the Typescript source code into Javascript. Notice the exclusion list. I excluded tests, test coverage outputs, and my prettier config. You may find that some other files you work with are problematic, and you likely don’t want/need them converted.
+
+![](https://static.wixstatic.com/media/e862a1_96df52180df042a389cc375d21232d3c~mv2.png/v1/fill/w_201,h_248,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_96df52180df042a389cc375d21232d3c~mv2.png)
+
+- The main **index.ts** file is the starting point of everything, and logs the app into Discord’s bot service, making it “online” for whatever server it’s on. This file is simple, and after getting the API setup, has listeners for some basic Discord server events.
+
+![](https://static.wixstatic.com/media/e862a1_817fe73331254ac68cce527853579442~mv2.png/v1/fill/w_637,h_106,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_817fe73331254ac68cce527853579442~mv2.png)
+
+- The _message_ event is the most important part of the bot interaction we’re wanting. This looks for any messages sent in a given server, like below:
+
+![](https://static.wixstatic.com/media/e862a1_ae5e4e02570e4addb66ffc7273e4d600~mv2.png/v1/fill/w_232,h_65,al_c,lg_1,q_85,enc_auto/e862a1_ae5e4e02570e4addb66ffc7273e4d600~mv2.png)
+
+- This message object contains a _lot_ of information, not just the raw text. So we have everything we need to do a lot of crazy stuff with it. After the commandHandler is invoked, it does a few quick checks, like if the message starts with a bot command prefix. If we don't check for the prefix, the Bot will be trying to decipher _way_ too many messages. In Tori's message above, the Bot would ignore the message, because it doesn't start with an exclamation point.
+
+```typescript
+// Determines whether or not a message is a user command
+private isCommand(message: Message): boolean {
+return message.content.startsWith(this.prefix);
+}
+```
+
+- We want to be able to add more commands easily, so whenever I make a new command class, I can just run my **index generator** (the commented code, [more about that pattern here](https://www.bravolt.com/post/generate-index-can-save-your-sanity)) in VS Code and it will automatically add the imports to a command **index.ts** file:
+
+```typescript
+//@index(['./*.ts(x)?','!**/*.*.*'], f => `export * from '${f.path}';`)
+export * from './commandInterface';
+export * from './greetCommand';
+export * from './helpCommand';
+export * from './jobsCommand';
+export * from './puppyCommand';
+export * from './rolesCommand';
+export * from './windowCommand';
+```
+
+- The commandHandler looks through all of our command classes, and instantiates whichever command matches the _commandNames_ array. So in the case of our _jobs_ command, this logic is run:
+
+![](https://static.wixstatic.com/media/e862a1_e0df16f48e7e43ccaeef50c8294189ab~mv2.png/v1/fill/w_654,h_318,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_e0df16f48e7e43ccaeef50c8294189ab~mv2.png)
+
+- The _getJobs_ function essentially scrapes Bravo LT’s job openings site, and grabs all the titles and their pdf descriptions into a nice, formatted string. This message is then sent by the bot itself:
+
+![](https://static.wixstatic.com/media/e862a1_1f5b4bbc10fa4de0bf9f4dd7cdbdf688~mv2.png/v1/fill/w_740,h_261,al_c,lg_1,q_85,enc_auto/e862a1_1f5b4bbc10fa4de0bf9f4dd7cdbdf688~mv2.png)
+
+## Takeaway
+
+We can do a lot with the setup I’ve briefly gone through. Bots can react to messages (see the role command I made in the repo), send audio/video in voice channels, or whatever you want!
+
+You can check out my repository for this bot [here](https://github.com/DaveAldon/bravo-discord-bot). Take note of the unit tests, and how easy it is to mock various Discord services! Unit testing has been a breeze for this project.

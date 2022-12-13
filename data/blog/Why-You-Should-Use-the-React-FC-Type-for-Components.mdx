@@ -1,0 +1,62 @@
+---
+title: 'Why You Should Use the React.FC Type for Components'
+publishedAt: '2022-03-29'
+summary: 'One of the beauties of Typescript is its strong emphasis on static typing. However, in some areas, this feature gets thrown out in favor of inference. Components are a great example of this—with types often being neglected.'
+image: 'https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/955c63_9c4c0b8584c1413db9792fc620ac5457~mv2.png/v1/fill/w_740,h_490,al_c,lg_1,q_90,enc_auto/955c63_9c4c0b8584c1413db9792fc620ac5457~mv2.png)
+
+One of the beauties of Typescript is its strong emphasis on static typing. However, in some areas, this feature gets thrown out in favor of inference. Components are a great example of this—with types often being neglected.
+
+This post is an effort to remind you of the benefits of adding types to any component you’re working on.
+
+Typically you’ll find, or make, components like this:
+
+![](https://static.wixstatic.com/media/955c63_022ced1584f0487cb65986daa067441f~mv2.png/v1/fill/w_295,h_82,al_c,q_85,enc_auto/955c63_022ced1584f0487cb65986daa067441f~mv2.png)
+
+Inherently, there isn’t anything wrong with this. It will absolutely work, and we can go about our day.
+
+_However_, when working on large code bases, predictability and testability become necessities.
+
+If you write a component like this, its type will be **JSX.Element**. What can we do with that outside of actually implementing it as a component? Not much.
+
+![](https://static.wixstatic.com/media/955c63_f58308ded42e4337ad5c4e48c3b8fcec~mv2.png/v1/fill/w_341,h_343,al_c,q_85,enc_auto/955c63_f58308ded42e4337ad5c4e48c3b8fcec~mv2.png)
+
+But if we add **React.FC** (or **React.FunctionComponent**) to the component type, things change:
+
+![](https://static.wixstatic.com/media/955c63_04cfd59b47994967a51a5e7416be0703~mv2.png/v1/fill/w_360,h_388,al_c,lg_1,q_85,enc_auto/955c63_04cfd59b47994967a51a5e7416be0703~mv2.png)
+
+Suddenly we get access to some interesting properties which are useful for testing. Additionally, if we use props, one thing that isn’t immediately obvious from this list is that we gain an inherent _children_ type.
+
+![](https://static.wixstatic.com/media/955c63_c5373ee5f8904272959de6f24c7f43d1~mv2.png/v1/fill/w_360,h_72,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_c5373ee5f8904272959de6f24c7f43d1~mv2.png)
+
+This is quite useful, because we don’t have to define a custom type for them in our prop anymore. They’re there as just default, optional behavior.
+
+If you’re new to the React paradigm, using children can be nebulous, and I find that **React.FC** helps clear the air on what hidden properties are out there.
+
+You might be of the opinion that it’s better to have children defined manually in your types, and that’s okay too. You can still do that in this case, which simply overrides the default **React.FC** from optional to required, or whatever you implement.
+
+![](https://static.wixstatic.com/media/955c63_8df78a29b2e84e2e8e81d4da7808aa47~mv2.png/v1/fill/w_360,h_144,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_8df78a29b2e84e2e8e81d4da7808aa47~mv2.png)
+
+The type protection we gain can also save us some headaches during the actual implementation of a component. Consider the following, where we have no errors in a conditional render inside the component itself, and we only get the error when using it somewhere else:
+
+![](https://static.wixstatic.com/media/955c63_247d1bd10d0c46ea8e246bdc777eb131~mv2.png/v1/fill/w_360,h_110,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_247d1bd10d0c46ea8e246bdc777eb131~mv2.png)
+
+If we add the **React.FC** type, the blame shifts to the source, and stops us from finishing our work on the component until its return conditions are defined properly.
+
+![](https://static.wixstatic.com/media/955c63_8f301dcd4df54ace989540f433f97ab2~mv2.png/v1/fill/w_360,h_107,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_8f301dcd4df54ace989540f433f97ab2~mv2.png)
+
+Remember, using **React.FC** doesn’t mean the return type changes. _A React.FC type component still returns a JSX.Element!_
+
+One additional change available using this type is prop types.
+
+In a large code base, we try to keep interface usage down to a minimum and leave them defined in definition files. The change needed when using **React.FC** is that we define our prop types in the component type, instead of the prop variable:
+
+![](https://static.wixstatic.com/media/955c63_7939083edcdc408ca5be0d1fe18e507c~mv2.png/v1/fill/w_360,h_153,al_c,lg_1,q_85,enc_auto/955c63_7939083edcdc408ca5be0d1fe18e507c~mv2.png)
+
+I hope this topic was useful for you. The additional properties I showed earlier like **contextTypes** and **displayName** are better explained through a topic on unit testing, and I wanted to keep this topic focused simply on the implication of using the **React.FC** component type.
+
+_Written by David Crawford, Mobile App Developer_
+
+![](https://static.wixstatic.com/media/090ee0_e57f2d186e9a4ee08161b76cd90f41ee~mv2.png/v1/fill/w_153,h_153,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/090ee0_e57f2d186e9a4ee08161b76cd90f41ee~mv2.png)

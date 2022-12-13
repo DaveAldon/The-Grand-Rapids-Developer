@@ -57,19 +57,19 @@ export default function Blog({
               Most Popular
             </h3>
             <BlogPost
-              title="Rust Is The Future of JavaScript Infrastructure"
-              summary="Why is Rust being used to replace parts of the JavaScript web ecosystem like minification (Terser), transpilation (Babel), formatting (Prettier), bundling (webpack), linting (ESLint), and more?"
-              slug="rust"
+              title="Deploying Next.js to GitHub Pages"
+              summary="Next.js is easy to get into using its own getting started guide, however in this post we’re interested in getting a Next.js website deployed to GitHub Pages. I’m going to share my lessons learned and what they don’t tell you about the deployment process."
+              slug="Deploying-Nextjs-to-Github-Pages"
             />
             <BlogPost
-              title="Everything I Know About Style Guides, Design Systems, and Component Libraries"
-              summary="A deep-dive on everything I've learned in the past year building style guides, design systems, component libraries, and their best practices."
-              slug="style-guides-component-libraries-design-systems"
+              title="React Custom Hooks vs. Local State"
+              summary="There’s plenty to be said about Hooks vs. Classes, but this post is going to be hyper-focused on “why” and “when” you should use Custom Hooks instead of Local State."
+              slug="React-Custom-Hooks-vs-Local-State"
             />
             <BlogPost
-              title="Building a Design System Monorepo with Turborepo"
-              summary="Manage multiple packages with a shared build, test, and release process using Turborepo, Changesets, Storybook, and more."
-              slug="turborepo-design-system-monorepo"
+              title="Atomic and Domain Driven React-Native Development"
+              summary="Atomic and Domain Driven development are two practices that seek to decouple, modularize, and create easy to maintain software projects. In this post, I want to share how I’ve combined the spirit of these two methodologies, by taking their best and simplest traits, and apply them to React Native."
+              slug="Atomic-and-Domain-Driven-React-Native"
             />
           </>
         )}

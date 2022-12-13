@@ -44,18 +44,18 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
-            title="Everything I Know About Style Guides, Design Systems, and Component Libraries"
-            slug="style-guides-component-libraries-design-systems"
+            title="Deploying Next.js to GitHub Pages"
+            slug="Deploying-Nextjs-to-Github-Pages"
             gradient="from-[#D8B4FE] to-[#F86139]"
           />
           <BlogPostCard
-            title="Rust Is The Future of JavaScript Infrastructure"
-            slug="rust"
+            title="React Custom Hooks vs. Local State"
+            slug="React-Custom-Hooks-vs-Local-State"
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
           />
           <BlogPostCard
-            title="Past, Present, and Future of React State Management"
-            slug="react-state-management"
+            title="Atomic and Domain Driven React-Native Development"
+            slug="Atomic-and-Domain-Driven-React-Native"
             gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
           />
         </div>

@@ -1,0 +1,89 @@
+---
+title: 'Generate Index Can Save Your Sanity'
+publishedAt: '2021-09-10'
+summary: 'When dealing with a complex code base, especially with Javascript, you likely have an index file that just contains a million exports. This post goes over one way to deal with dynamic code generation.'
+image: 'https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/e862a1_e9ad98fa160e42a391773b5330758598~mv2.png/v1/fill/w_740,h_494,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/e862a1_e9ad98fa160e42a391773b5330758598~mv2.png)
+
+When dealing with a complex code base, especially with Javascript, you likely have an index file that just contains a million exports. Ordinarily, if there’s a pattern of any kind, we can program something to automatically handle it. But in this case, we’re dealing with _physical_ files that become more and more difficult to programmatically deal with.
+
+The problem:
+
+- Every time a new file is introduced, we have to go add it to the index file
+- Patterns dealing with physical files are annoying to deal with
+- This doesn’t feel like something a programmer should have to manually do
+
+The solution:
+
+- [VS Code](https://code.visualstudio.com/)
+- [Generate Index](https://marketplace.visualstudio.com/items?itemName=JayFong.generate-index)
+
+### Generate Index
+
+Generate Index is a plugin for VS Code that uses [minimatch](https://github.com/isaacs/minimatch#usage) patterns to find physical files, and generates code based on your output pattern. The more I use this plugin, the more automated a lot of my boring code generation has become. The below example is from the author’s repo:
+
+![](https://static.wixstatic.com/media/e862a1_d41d3f05dc2f4906941b5f79b8a31855~mv2.png/v1/fill/w_740,h_193,al_c,lg_1,q_85,enc_auto/e862a1_d41d3f05dc2f4906941b5f79b8a31855~mv2.png)
+
+### How to Use
+
+1. After installing the [plugin](https://marketplace.visualstudio.com/items?itemName=JayFong.generate-index), in the example above, generating an index starts with an @index comment, followed by your pattern. This pattern is minimatch based, and can get as complicated as you want. In my example below, I’m using it to actually _import_ very specifically named dependencies:
+
+![](https://static.wixstatic.com/media/e862a1_9dd9e85d8815453a8720edbc9edd3625~mv2.png/v1/fill/w_740,h_109,al_c,lg_1,q_85,enc_auto/e862a1_9dd9e85d8815453a8720edbc9edd3625~mv2.png)
+
+And the output would be:
+
+![](https://static.wixstatic.com/media/e862a1_8eef57641b9f471fb06ae11cb1c256d2~mv2.png/v1/fill/w_740,h_80,al_c,lg_1,q_85,enc_auto/e862a1_8eef57641b9f471fb06ae11cb1c256d2~mv2.png)
+
+2. To run the generate command, open the command palette and run “Generate Index”
+
+![](https://static.wixstatic.com/media/e862a1_4db645774ea34ea1abaf53dee168cbde~mv2.png/v1/fill/w_365,h_243,al_c,lg_1,q_85,enc_auto/e862a1_4db645774ea34ea1abaf53dee168cbde~mv2.png)
+
+3. It will overwrite anything inside of the index block. So if you want it to end at a certain point, add this at the bottom of your automated area:
+
+```js
+// @endindex
+```
+
+### The Opportunity
+
+I’ve been using Generate Index on more things than imports/exports. The more you use it, the more opportunities you’ll start to see. My team has been getting _really_ creative with them, and uses them outside the index scope. Here are some examples.
+
+![](https://static.wixstatic.com/media/e862a1_4762451894b24f85ba5a44e86e4612ca~mv2.png/v1/fill/w_740,h_184,al_c,lg_1,q_85,enc_auto/e862a1_4762451894b24f85ba5a44e86e4612ca~mv2.png)
+
+This pattern looks for any Typescript files that have an _**.event.ts**_ or _**.events.ts**_ extension, in a specific directory, and assumes that they have an export inside of them named after each file’s suffix. It then adds a line that “registers” them to this custom system object.
+
+![](https://static.wixstatic.com/media/e862a1_68e385748054454ea86582d44aaa83f6~mv2.png/v1/fill/w_740,h_314,al_c,lg_1,q_85,enc_auto/e862a1_68e385748054454ea86582d44aaa83f6~mv2.png)
+
+This pattern is an example of needing to use proper indentation on the generated lines, because it bypasses the auto-formatters in some use-cases.
+
+### Automating the Automation
+
+You might be thinking that since we’re using Generate Index in a bunch of places, now we have to go into all these places and manually trigger the index a million times! Normally, you’d be right. But luckily, I lied at the beginning of this post. You actually don’t even need VS Code to use this, but it’s great for when you need to troubleshoot your index commands.
+
+There’s actually a standalone version of this that the original author created, so it can be installed via npm/yarn:
+
+# npm
+
+```bash
+npx vscode-generate-index-standalone src/ scripts/
+```
+
+# yarn
+
+```bash
+yarn vscode-generate-index-standalone src/ scripts/
+```
+
+Then you can programmatically call it in your code base (instructions in the [readme](https://github.com/fjc0k/vscode-generate-index)).
+
+Or you can do what I do, which is run it every time I start the project, which is then part of the Continuous Integration stack by default. For example, if you use [git-hooks](https://git-scm.com/docs/githooks), in your pre-commit and start-hook file, add this line in:
+
+```bash
+npx vscode-generate-index-standalone ./App/\*\*
+```
+
+Then, all your indexes will auto generate every time you start up your project! If you missed any, they’ll be added when your CI stack builds the project.
+
+Generate Index is fun to use, saves a lot of time in the long-run, and works exactly as well as the patterns you create.

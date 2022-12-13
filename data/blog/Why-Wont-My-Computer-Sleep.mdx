@@ -1,0 +1,215 @@
+---
+title: 'Why Wont My Computer Sleep?'
+publishedAt: '2022-09-07'
+summary: 'This week I had a problem - my computer wouldnt go to sleep, even after shutting the lid. My battery was draining like crazy. There are several reasons this could happen to anyone, and this post is a deep, technical dive into WHY it happens, and HOW to fix it!'
+image: 'https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/955c63_7fd417d33c6f4594b266dca197de9061~mv2.png/v1/fill/w_624,h_395,al_c,q_85,enc_auto/955c63_7fd417d33c6f4594b266dca197de9061~mv2.png)
+
+Have you ever shut your laptop’s lid and thought it went to sleep, only to return later to a dead battery? While this certainly doesn’t happen to everyone, it’s happened to me many times, and I wanted to know more about _why_. This article is a **deep-dive** for anyone using a Mac operating system, and especially laptops that won’t sleep when the lid is closed.
+
+I’m focusing on three major areas of Mac insomnia, which can cause your computer to stay awake longer than intended and drain the battery:
+
+1.  Activity Monitor
+2.  Assertions
+3.  Dark Wake
+
+In the battery settings in your system preferences, a nice graph is shown depicting your computer’s battery life in the last 24 hours. It also indicates when it was plugged in. In the image below, I have an example of when my laptop was sleeping, and then when I plugged it in. While it was sleeping, it was draining the battery at a far faster rate than it should (down to 85% overnight). What’s going on here?
+
+![](https://static.wixstatic.com/media/955c63_c9dd1cc15faf46a2b354f9ea0696bc84~mv2.png/v1/fill/w_547,h_250,al_c,q_85,enc_auto/955c63_c9dd1cc15faf46a2b354f9ea0696bc84~mv2.png)
+
+## Activity Monitor
+
+This is Apple’s go-to answer for anything related to sleep problems. And it solves _some_ of the issues, but not **all**. Open Activity Monitor and go to the energy tab. This only helps us stop apps that prevent _display_ sleep. We’re not going to see anything that is interrupting sleep on a closed lid.
+
+![](https://static.wixstatic.com/media/955c63_9412bee517da43b3a2fd5310f30f5f81~mv2.png/v1/fill/w_426,h_191,al_c,q_85,enc_auto/955c63_9412bee517da43b3a2fd5310f30f5f81~mv2.png)
+
+There are processes that can block sleep that won’t register here. This is possible in the same way that apps can start on login even though they’re not showing in the **Users & Groups -> Login Items** system preference. To stop unregistered apps from starting on login, we can simply remove their Launch Daemons and Agents. Now, to stop apps from _preventing sleep_, we have to find an equivalent method. Let’s get started!
+
+## Assertions
+
+1. On a Mac, install watch via Brew using this command:
+
+```bash
+brew install watch
+```
+
+2. Then, run this command in Terminal:
+
+```bash
+watch pmset -g
+```
+
+You should see an interesting result. **Watch** updates our command every two seconds live, which is important to see how this whole process works. If you wait, you’ll probably see something change, and processes come and go. Here’s a sample:
+
+```bash
+System-wide power settings:
+Currently in use:
+Sleep On Power Button 1
+hibernatefile /var/vm/sleepimage
+networkoversleep 0
+disksleep 10
+sleep 1 (sleep prevented by bluetoothd, Shift, sharingd, powerd)
+hibernatemode 3
+ttyskeepawake 1
+displaysleep 10
+lowpowermode 0
+womp 0
+```
+
+What do these mean?
+
+- hibernatefile - hibernation image file location
+- networkoversleep - how OS X networking presents shared network services during system sleep
+- disksleep - disk spindown timer
+- sleep - system sleep timer
+- hibernatemode - which mode of hibernation is being used
+- ttyskeepawake - prevent idle system sleep when any remote login session is active
+- displaysleep - display sleep timer
+- lowpowermode - is low power mode active
+- womp - Wake On Ethernet Magic Packet. Same as "Wake for network access" in the Energy Saver preferences
+
+You’re probably thinking that the **sleep** field is to blame, as it’s literally saying that those processes are preventing sleep in the report. If you’re running this via **watch**, and have a bluetooth device connected to your computer, this value will actually disappear after a couple seconds. It will return if you move your bluetooth mouse, or some other device that has timeouts. But what about the others? If you’re patient, you’ll even see **apsd**, **mds_stores** or **runningboard** processes come and go. But what about **sharingd**? Or **powerd**? In my case, these never go away. Does that mean my computer will never sleep? Not necessarily.
+
+A good example is that even though **Shift** is reported here in my case, this app doesn’t actually prevent my computer from sleeping. But, Chrome processes spawned by Shift may do this, as it’s a Chrome webview wrapper app. To take a more advanced view and dive deeper into what’s really going on here, run this command:
+
+```bash
+watch pmset -g assertions
+```
+
+Now we can see a better breakdown, and see the actual process names and pids that are associated with these assertaions.
+
+```bash
+Assertion status system-wide:
+BackgroundTask 0
+ApplePushServiceTask 0
+UserIsActive 1
+PreventUserIdleDisplaySleep 0
+PreventSystemSleep 0
+ExternalMedia 0
+PreventUserIdleSystemSleep 1
+NetworkClientActive 0
+Listed by owning process:
+pid 334(powerd): [0x000122e000019539] 00:10:10 PreventUserIdleSystemSleep named: "Powerd - Prevent sleep while display is on"
+pid 598(Shift): [0x0001064e0001896d] 04:03:37 NoIdleSleepAssertion named: "WebRTC has active PeerConnections"
+pid 382(bluetoothd): [0x0001253300019798] 00:00:15 PreventUserIdleSystemSleep named: "com.apple.BTStack"
+pid 831(sharingd): [0x0001234500019744] 00:08:29 PreventUserIdleSystemSleep named: "Handoff"
+```
+
+Let's go through some of these categories:
+
+**PreventUserIdleSystemSleep -** [**Apple’s Documentation**](https://developer.apple.com/documentation/iokit/kiopmassertiontypepreventuseridlesystemsleep)
+
+These are assertions like com.apple.BTStack, Handoff, and “Powerd - Prevent sleep while display is on.” What this means is that while the display may sleep while the user is idle, the system will not sleep. But per the docs, the system should still sleep if you close your laptop’s lid, or sleep manually. This means that these assertions aren’t always the culprit, but could still cause a battery drain if you leave the lid open.
+
+**NoIdleSleepAssertion -** [**Apple’s Documentation**](https://developer.apple.com/documentation/iokit/kiopmassertiontypenoidlesleep)
+
+This is easy to pop up if you turn on a YouTube video in a Chrome tab. However, note that closing the lid ordinarily stops any videos or music from playing, so this assertion is supposed to go away. If you have settings that allow music or video to continue, this assertion will remain and closing the lid won’t put the computer fully to sleep.
+
+In other cases where closing the lid _doesn’t_ cancel this assertion, Apple says that “the system will prefer to enter the Dark Wake state, or remain in Dark Wake if already there, rather than go to sleep.” It’s interesting that this will happen even if the lid is closed. The only way for the system to sleep during this type of assertion is if it literally overheats, or if your battery dies (duh). In most cases of extreme sleep deprivation, entries in this list are the culprit. You can kill these processes based on their pid in the log like this:
+
+```bash
+sudo kill <pid>
+```
+
+And if you need to kill a process that's stale and not reported, you can instead kill the powerd process without having to log out or reboot:
+
+```bash
+$ ps -e | grep powerd
+
+<pid> ??         0:00.05 /System/Library/CoreServices/powerd.bundle/powerd
+$ sudo kill <pid>
+```
+
+But what about processes that aren't showing on here? What is **Dark Wake**? What can we do about this?
+
+## Dark Wake
+
+Dark Wake was created with Mac OS X Lion, which was then added to Power Nap in Mac OS X **Mountain** Lion. Power Nap is still used today, and Apple says the following about it [here](https://support.apple.com/guide/mac-help/what-is-power-nap-mh40773/mac): “Power Nap, available on Mac computers with flash memory, lets some Mac computers stay up to date even while they’re sleeping. When your Mac goes to sleep, Power Nap activates periodically to update information.” You might think that the solution is to just turn off Power Nap, right? Well, on Intel machines this is possible right in the energy page in system preferences. But even Apple’s website doesn’t mention the fact that any **M1** based Mac **doesn’t have the ability to turn off Power Nap**. I use an M1 Mac, and since the other two areas of sleep (Activity Monitor and Assertions) aren’t the culprit for me, then that means Dark Wake is the problem. If I’m forced to use it, how can I prove that it’s the problem, and what can I do about it? Let’s investigate.
+
+If you’re curious if your computer ever enters/exits Dark Wake, run this command:
+
+```bash
+pmset -g log|grep -e " Sleep " -e " Wake "
+```
+
+And then look for references to it like this example:
+
+```bash
+2022-08-24 18:51:13 -0400 Wake DarkWake to FullWake from Deep Idle [CDNVA] : due to Notification Using AC (Charge:100%)
+```
+
+In my case, there were additional concerns regarding Dark Wake. When I ran that command, I saw _thousands_ of entries like this in a single day:
+
+```bash
+2022-08-24 09:29:48 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:29:55 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:30:02 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 3 secs
+2022-08-24 09:30:10 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:30:17 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:30:25 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:30:32 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:30:39 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 3 secs
+2022-08-24 09:30:47 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:30:54 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+2022-08-24 09:31:02 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=disabled Using Batt (Charge:85%) 2 secs
+```
+
+These events coincide exactly with the image of my battery stats over the last 24 hours I showed earlier:
+
+![](https://static.wixstatic.com/media/955c63_22bc66b9f1ab4e5d9c07d0d8fbf91c9d~mv2.png/v1/fill/w_547,h_250,al_c,q_85,enc_auto/955c63_22bc66b9f1ab4e5d9c07d0d8fbf91c9d~mv2.png)
+
+The issue here is that on Intel machines, these Power Nap checks are only supposed to happen about once an hour. I’m using an M1 machine, where it’s supposed to happen about **three** times an hour. But according to these logs, it’s happening about every **ten seconds**. So my computer, when the lid is closed and asleep, wakes up and does _nothing_ every ten seconds. Why? Depending on the messages in the sleep report, there are **three** main reasons, and simple solutions to each:
+
+1. There's a high volume of network activity waking the computer up
+
+This is only supposed to happen when connected to a power source. Nevertheless, if this is a problem for you, you can turn it off in system preferences -> Battery -> Power Adapter -> Wake for network access. You can confirm that this is on or off by running the **pmset -g** command from earlier, and looking at the **womp** value. It will be 0 or 1 depending on its off/on state.
+
+2. Bluetooth devices are waking the computer up
+
+Since macOS Monterey (12.2.1), the ability to disable waking via Bluetooth was removed. The thing about this problem is that you need to know _which_ Bluetooth device is the culprit. Keyboards and mice are supposed to wake the computer, but there may be something else that’s connecting with the computer too many times. We can cover up the symptoms, but the reality is that this isn’t really the computer’s fault, but the accessory’s.
+
+If you absolutely must do this, you can turn off Bluetooth before sleeping, or automate it with a program like [Bluesnooze](https://github.com/odlp/bluesnooze/) or [KBOS](https://github.com/alb12-la/KBOS).
+
+You can also check if **proximitywake** shows up in your assertions, which wakes the computer if a device using the same iCloud account is nearby. This can be disabled via (use at your own risk):
+
+```bash
+sudo pmset -a proximitywake 0
+```
+
+3. Maintenance checks are performed too frequently
+
+This was the problem I was having, as you could see from the sleep logs how it mentioned “Maintenance Sleep.” Even though I said that Power Nap can’t be disabled on an M1 machine, the dirty secret is that you _can_ via terminal commands, but with nasty side effects. If you check the **man** page of **pmset**, there’s a tiny reference to **powernap**:
+
+```bash
+powernap - enable/disable Power Nap on supported machines (value = 0/1)
+```
+
+The real kicker is that powernap was **disabled already** on my computer. It turns out that if powernap is off on an M1 machine, it gets really messed up during sleep and tries doing maintenance updates constantly! The architecture of the M1 is designed specifically to stay awake without detrimental effects to power, but if we interfere with this somehow, the normal cycles get broken.
+
+![](https://static.wixstatic.com/media/955c63_ff72759bd2964370a8cbb919cdcec861~mv2.jpg/v1/fill/w_624,h_351,al_c,q_80,enc_auto/955c63_ff72759bd2964370a8cbb919cdcec861~mv2.jpg)
+
+I ran this command to turn powernap back on:
+
+```bash
+sudo pmset powernap 1
+```
+
+And my M1's maintenance cycles magically started running about five times an hour during sleep, which is perfectly normal! Here's a log from 3am:
+
+```bash
+2022-08-25 02:44:57 -0400 Sleep Entering Sleep state due to 'Sleep Service Back to Sleep':TCPKeepAlive=active Using Batt (Charge:92%) 971 secs
+2022-08-25 03:01:12 -0400 Sleep Entering Sleep state due to 'Sleep Service Back to Sleep':TCPKeepAlive=active Using Batt (Charge:92%) 1066 secs
+2022-08-25 03:19:02 -0400 Sleep Entering Sleep state due to 'Sleep Service Back to Sleep':TCPKeepAlive=active Using Batt (Charge:92%) 272 secs
+2022-08-25 03:23:39 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=active Using Batt (Charge:92%) 971 secs
+2022-08-25 03:39:54 -0400 Sleep Entering Sleep state due to 'Sleep Service Back to Sleep':TCPKeepAlive=active Using Batt (Charge:92%) 1030 secs
+2022-08-25 03:57:09 -0400 Sleep Entering Sleep state due to 'Sleep Service Back to Sleep':TCPKeepAlive=active Using Batt (Charge:92%) 791 secs
+2022-08-25 04:10:25 -0400 Sleep Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=active Using Batt (Charge:92%) 954 secs
+```
+
+Maintenance wakeups were running an average of five times per hour, and my battery drain was about 0.1% per hour. This is exactly the performance I was hoping to get to.
+
+## Conclusion
+
+There’s a lot to unpack when it comes to something as simple as a computer sleeping. And with M1, we’re introducing new paradigms that closely resemble how our phones work when they’re sleeping too. Phones are always doing something when the screen is off, and you can be assured that it’s normal for our M1 Macs to do the same thing. The problem is when this unseen activity starts causing problems. Don’t be afraid to dig a little deeper, and learn something new about a computer you use every day.
