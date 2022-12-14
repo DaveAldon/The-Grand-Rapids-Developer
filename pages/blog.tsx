@@ -24,8 +24,10 @@ export default function Blog({
           Blog
         </h1>
         <p className="mb-4 text-gray-600 dark:text-gray-400">
-          {`I've been writing in blogs for many years, and specifically with software development, I wanted to consolidate writing I've done for various companies and personal projects.
-            In total, I've written ${posts.length} articles for The Grand Rapids Developer blog.
+          {`I've been writing for many years, and this blog is specifically for software development. I wanted to consolidate writing I've done for various companies and personal projects.`}
+        </p>
+        <p className="mb-4 text-gray-600 dark:text-gray-400">
+          {`In total, I've written ${posts.length} articles for The Grand Rapids Developer blog.
             Use the search below to filter by title.`}
         </p>
         <div className="relative w-full mb-4">

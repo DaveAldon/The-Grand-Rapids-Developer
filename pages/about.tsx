@@ -10,29 +10,33 @@ export default function About() {
         <h1 className="font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white">
           About Me
         </h1>
+        <div className="flex space-x-8">
+          <Image
+            alt="David Crawford headshot"
+            width={400}
+            height={400}
+            quality={100}
+            src={'/avatar.jpg'}
+            className="rounded-md"
+          />
+          <div className="mb-8 prose dark:prose-dark leading-6">
+            <h2>Links</h2>
+            <ul>
+              <li>
+                <Link href="https://github.com/DaveAldon">
+                  <a>Github</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="https://www.linkedin.com/in/davidcrawfordprofile/">
+                  <a>LinkedIn</a>
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div className="mb-8 prose dark:prose-dark leading-6">
-          <h2>Links</h2>
-          <ul>
-            <li>
-              GitHub: <a href="https://github.com/DaveAldon">@davealdon</a>
-            </li>
-            <li>
-              Website:{' '}
-              <Link href="https://the-grand-rapids-developer.vercel.app">
-                <a>the-grand-rapids-developer.vercel.app</a>
-              </Link>
-            </li>
-            <li>
-              LinkedIn:{' '}
-              <Link href="https://www.linkedin.com/in/davidcrawfordprofile/">
-                <a>https://www.linkedin.com/in/davidcrawfordprofile</a>
-              </Link>
-            </li>
-          </ul>
-          <h2>Bio</h2>
-          <h3>Job Title</h3>
-          <p>David Crawford, Software Developer at Michigan Labs</p>
-          <h3>Long, 3rd Person</h3>
+          <h2>3rd Person Bio</h2>
           <p>
             David Crawford is a Software Developer at{' '}
             <a href="https://michiganlabs.com/">Michigan Labs</a>, a talented
@@ -40,22 +44,55 @@ export default function About() {
             a focus on solving some of the most challenging problems in custom
             software. He was hired to work in small teams to develop custom
             mobile, web, and IoT software via the software consultancy model for
-            locally owned businesses, and some of the worldU+2019s leading
-            companies.
+            locally owned businesses, and some of the world's leading companies.
           </p>
-          <h2>Headshot</h2>
-          <div className="flex space-x-8">
-            <a href="/avatar.jpg">
-              <Image
-                alt="David Crawford headshot"
-                width={400}
-                height={400}
-                quality={100}
-                src={'/avatar.jpg'}
-                className="rounded-md"
-              />
-            </a>
-          </div>
+          <p>
+            David is a natural born problem-solver. When he needed to learn how
+            to type as a kid, he turned to a Mac SE 30 and the Mavis Beacon
+            software that came with it. He liked his hand-me-down computer,
+            because it allowed him to accomplish goals in a simple,
+            easy-to-understand way. Before long, he was making mods for the old
+            Star Wars Battlefront games using Lua. It was the beginning of a
+            lifelong love of code.
+          </p>
+          <p>
+            As an information systems major at Grand Valley State University,
+            David expanded his software knowledge, both in theory and in
+            practice. Beyond being exposed to a variety of languages and
+            technologies, he was able to work with actual clients during his
+            capstone project. The experience taught him the value of customer
+            feedback and the real-world benefits of rapid prototyping.
+          </p>
+          <p>
+            After a series of roles at various organizations, David was hired as
+            a software developer at Bravo LT. In addition to client projects, he
+            formed the consultancy’s blog strategy, using it to showcase their
+            expertise and focus on the developer community. He also shaped the
+            company’s internship program and, along the way, changed code
+            assessments for interviews to focus on real-world problems and help
+            identify top talent.
+          </p>
+          <p>
+            David’s move to Michigan Labs was based on three main factors: their
+            consultancy approach, the teamwork and collaboration that infuses
+            their culture, and the overall energy and outspokenness of their
+            members. Every day, it is a joy being able to solve interesting
+            problems and build something useful, together.
+          </p>
+          <p>
+            Like many of Michigan Labs' members, David has a variety of outside
+            interests. Two that come to the top are digital art and writing. His
+            self-published books range from children's historical fiction to
+            theology to fantasy. He has also served as a high school eSports
+            coach and continues to maintain blogs of varying topics.
+          </p>
+          <p>
+            In his downtime, David looks after Button Quail. He’s also into
+            genealogy. A descendant of William Brewster (leader of the pilgrims
+            during the Mayflower voyage), he delves deep into his family
+            history. It turns out problem-solving and building something useful
+            run in the family.
+          </p>
         </div>
       </div>
     </Container>

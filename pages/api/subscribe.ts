@@ -16,7 +16,7 @@ export default async function handler(
       Authorization: `Token ${process.env.REVUE_API_KEY}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ email })
+    body: JSON.stringify({ email, first_name: '', last_name: '' })
   });
   const data = await result.json();
 
