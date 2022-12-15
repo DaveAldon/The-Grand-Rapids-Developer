@@ -2,6 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import Container from 'components/Container';
+import Skills from 'components/Skills';
+import Industries from 'components/Industries';
+import Links from 'components/Links';
 
 export default function About() {
   return (
@@ -35,8 +38,15 @@ export default function About() {
             </ul>
           </div>
         </div>
+        <Skills />
+        <Industries />
+        <Links />
         <div className="mb-8 prose dark:prose-dark leading-6">
-          <h2>3rd Person Bio</h2>
+          <div className="text-center">
+            <h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-gray-900 mb-4 dark:text-white">
+              3rd Person Bio
+            </h1>
+          </div>
           <p>
             David Crawford is a Software Developer at{' '}
             <a href="https://michiganlabs.com/">Michigan Labs</a>, a talented

@@ -12,7 +12,9 @@ module.exports = withContentlayer({
       'pbs.twimg.com', // Twitter Profile Picture
       'i.pravatar.cc', // Random Profile Picture
       'static.wixstatic.com', // Wix Images
-      'media.licdn.com' // LinkedIn Pictures
+      'media.licdn.com', // LinkedIn Pictures
+      'dummyimage.com', // Dummy Images
+      'drive.google.com' // Google Drive Images
     ]
   },
   experimental: {
