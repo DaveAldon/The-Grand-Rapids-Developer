@@ -5,43 +5,16 @@ import Container from 'components/Container';
 import Skills from 'components/Skills';
 import Industries from 'components/Industries';
 import Links from 'components/Links';
+import BioCard from 'components/BioCard';
 
 export default function About() {
   return (
     <Container title="About – David Crawford">
       <div className="flex flex-col justify-center items-start max-w-2xl mx-auto mb-16 w-full">
-        <h1 className="font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white">
-          About Me
-        </h1>
-        <div className="flex space-x-8">
-          <Image
-            alt="David Crawford headshot"
-            width={400}
-            height={400}
-            quality={100}
-            src={'/avatar.jpg'}
-            className="rounded-md"
-          />
-          <div className="mb-8 prose dark:prose-dark leading-6">
-            <h2>Links</h2>
-            <ul>
-              <li>
-                <Link href="https://github.com/DaveAldon">
-                  <a>Github</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.linkedin.com/in/davidcrawfordprofile/">
-                  <a>LinkedIn</a>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <BioCard />
         <Skills />
         <Industries />
-        <Links />
-        <div className="mb-8 prose dark:prose-dark leading-6">
+        <div className="mb-8 prose dark:prose-dark leading-6 mt-20">
           <div className="text-center">
             <h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-gray-900 mb-4 dark:text-white">
               3rd Person Bio
