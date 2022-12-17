@@ -49,7 +49,7 @@ export default function Container(props) {
   return (
     <div className="bg-gray-50 dark:bg-gray-900">
       <Head>
-        <title>{meta.title}</title>
+        <title>The Grand Rapids Dev</title>
         <meta name="robots" content="follow, index" />
         <meta content={meta.description} name="description" />
         <meta
