@@ -14,7 +14,10 @@ module.exports = withContentlayer({
       'static.wixstatic.com', // Wix Images
       'media.licdn.com', // LinkedIn Pictures
       'dummyimage.com', // Dummy Images
-      'drive.google.com' // Google Drive Images
+      'drive.google.com', // Google Drive Images
+      'is3-ssl.mzstatic.com', // Apple Images
+      'is2-ssl.mzstatic.com', // Apple Images
+      'is1-ssl.mzstatic.com' // Apple Images
     ]
   },
   experimental: {

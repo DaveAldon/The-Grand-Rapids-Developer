@@ -24,7 +24,7 @@ export default function Blog({
           Blog
         </h1>
         <p className="mb-4 text-gray-600 dark:text-gray-400">
-          {`I've been writing for many years, and this blog is specifically for software development. I wanted to consolidate writing I've done for various companies and personal projects.`}
+          {`I've been writing in various genres for many years, and this blog is specifically for software development.`}
         </p>
         <p className="mb-4 text-gray-600 dark:text-gray-400">
           {`In total, I've written ${posts.length} articles for The Grand Rapids Developer blog.

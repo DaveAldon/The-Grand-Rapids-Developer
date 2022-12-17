@@ -1,9 +1,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+const SocialLink = ({ href, title }) => (
+  <div className="p-2">
+    <Link href={href}>
+      <a target={'_blank'}>
+        <div className="bg-gray-200 dark:bg-gray-800 rounded flex p-4 h-full items-center">
+          <span className="title-font font-medium dark:text-white">
+            {title}
+          </span>
+        </div>
+      </a>
+    </Link>
+  </div>
+);
+
 export default function BioCard() {
   return (
-    <section className="mb-5 text-gray-800 text-center text-left">
+    <section className="text-gray-800 text-center text-left">
       <div className="container mx-auto text-center text-left">
         <div className="grid grid-cols-2 flex items-center">
           <div className="mb-12">
@@ -21,35 +35,27 @@ export default function BioCard() {
                 About Me
               </h2>
               <p className="text-black-100 mb-5 dark:text-white">
-                Check out my GitHub and LinkedIn profiles to see what I've been
-                up to in the social/open-source world!
+                Check out some of my profiles below, and what I've been up to in
+                the social/open-source world!
               </p>
               <ul>
                 <li>
-                  <div className="p-2">
-                    <Link href="https://github.com/DaveAldon">
-                      <a target={'_blank'}>
-                        <div className="bg-gray-200 dark:bg-gray-800 rounded flex p-4 h-full items-center">
-                          <span className="title-font font-medium dark:text-white">
-                            GitHub
-                          </span>
-                        </div>
-                      </a>
-                    </Link>
-                  </div>
+                  <SocialLink
+                    title="GitHub"
+                    href="https://github.com/DaveAldon"
+                  />
                 </li>
                 <li>
-                  <div className="p-2">
-                    <Link href="https://www.linkedin.com/in/davidcrawfordprofile/">
-                      <a target={'_blank'}>
-                        <div className="bg-gray-200 dark:bg-gray-800 rounded flex p-4 h-full items-center">
-                          <span className="title-font font-medium dark:text-white">
-                            LinkedIn
-                          </span>
-                        </div>
-                      </a>
-                    </Link>
-                  </div>
+                  <SocialLink
+                    title="LinkedIn"
+                    href="https://www.linkedin.com/in/davidcrawfordprofile/"
+                  />
+                </li>
+                <li>
+                  <SocialLink
+                    title="Michigan Labs Bio"
+                    href="https://michiganlabs.com/about/david-crawford"
+                  />
                 </li>
               </ul>
             </div>

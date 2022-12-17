@@ -7,6 +7,8 @@ image: 'https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd
 
 ![](https://static.wixstatic.com/media/e862a1_92e432e7b8074b1282a61dd4acd8ec30~mv2.png/v1/fill/w_740,h_494,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/e862a1_92e432e7b8074b1282a61dd4acd8ec30~mv2.png)
 
+[![](https://img.shields.io/badge/Originally%20Posted%20%40-Bravo%20LT-blue?style=for-the-badge)](https://www.bravolt.com)
+
 Hot on the heels of my recent passing of the [AWS Cloud Practitioner certification](https://www.credly.com/badges/fa058d66-8114-4187-b13c-7678e4b4fc15) exam, I wanted to get right into some interesting and relevant AWS work. This post was made in collaboration with [Justin Wheeler](https://www.linkedin.com/in/wheelerswebservices/), Senior Software Developer at Bravo LT and resident cloud expert who has [all AWS certifications](https://www.credly.com/users/justin-wheeler.8cf239e4), to share a barebones example of how to deploy to AWS Lambda using [MFA](https://aws.amazon.com/iam/features/mfa/) and [SAM CLI](https://aws.amazon.com/serverless/sam/), and the [Least Privilege](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html) IAM policy.
 
 In nearly all guides out there, Lambda functions are deployed **without** the Least Privilege policy, meaning that everyone assumes that everyone has full admin rights. But this is not a best practice, and in reality is a large security risk.
@@ -115,7 +117,7 @@ Looking for config file [samconfig.toml] : Found
 Reading default arguments : Success
 ```
 
-# Setting default arguments for 'sam deploy'
+## Setting default arguments for `sam deploy`
 
 ```bash
 Stack Name [sam-barebones-aws-lambda-with-mfa]:

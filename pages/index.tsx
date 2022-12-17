@@ -27,8 +27,10 @@ export default function Home({ videos }) {
               <span className="font-semibold">Michigan Labs</span>
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-16">
-              Helping developers build a faster web. Teaching about web
-              development, serverless, and React / Next.js.
+              Sharing cool techniques and interesting technology for anyone who
+              is curious. Topics range across a wide variety like React-Native,
+              Next.js, vintage C, and behavioral/culture development from a
+              business perspective.
             </p>
           </div>
           <div className="w-[80px] sm:w-[176px] relative mb-8 sm:mb-0 mr-auto">

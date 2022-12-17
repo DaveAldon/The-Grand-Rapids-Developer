@@ -70,7 +70,7 @@ const Skill = ({ name, color }: { name: string; color: SkillType }) => {
 export default function Skills() {
   return (
     <section className="text-gray-600 body-font w-full">
-      <div className="container px-5 pt-24 mx-auto">
+      <div className="container px-5 mx-auto">
         <div className="text-center mb-10">
           <h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-gray-900 mb-4 dark:text-white">
             Programming Knowledge
