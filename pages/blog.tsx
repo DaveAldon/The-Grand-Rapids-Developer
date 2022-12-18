@@ -20,7 +20,7 @@ export default function Blog({
       description="My thoughts on software development, technology, and writing."
     >
       <div className="flex flex-col items-start justify-center max-w-2xl mx-auto mb-16">
-        <h1 className="mb-4 text-3xl font-bold tracking-tight text-black md:text-5xl dark:text-white">
+        <h1 className="mb-4 text-3xl font-bold tracking-tight text-black dark:text-white">
           Blog
         </h1>
         <p className="mb-4 text-gray-600 dark:text-gray-400">
@@ -55,27 +55,30 @@ export default function Blog({
         </div>
         {!searchValue && (
           <>
-            <h3 className="mt-8 mb-4 text-2xl font-bold tracking-tight text-black md:text-4xl dark:text-white">
+            <h3 className="mt-8 mb-4 text-2xl font-bold tracking-tight text-black dark:text-white">
               Most Popular
             </h3>
             <BlogPost
               title="Deploying Next.js to GitHub Pages"
               summary="Next.js is easy to get into using its own getting started guide, however in this post we’re interested in getting a Next.js website deployed to GitHub Pages. I’m going to share my lessons learned and what they don’t tell you about the deployment process."
               slug="Deploying-Nextjs-to-Github-Pages"
+              image="https://static.wixstatic.com/media/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png/v1/fill/w_740,h_427,al_c,lg_1,q_85,enc_auto/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png"
             />
             <BlogPost
               title="React Custom Hooks vs. Local State"
               summary="There’s plenty to be said about Hooks vs. Classes, but this post is going to be hyper-focused on “why” and “when” you should use Custom Hooks instead of Local State."
               slug="React-Custom-Hooks-vs-Local-State"
+              image="https://static.wixstatic.com/media/955c63_05d6b307095c42688e0cc64ba7dc565d~mv2.png/v1/fill/w_740,h_414,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_05d6b307095c42688e0cc64ba7dc565d~mv2.png"
             />
             <BlogPost
               title="Atomic and Domain Driven React-Native Development"
               summary="Atomic and Domain Driven development are two practices that seek to decouple, modularize, and create easy to maintain software projects. In this post, I want to share how I’ve combined the spirit of these two methodologies, by taking their best and simplest traits, and apply them to React Native."
               slug="Atomic-and-Domain-Driven-React-Native"
+              image="https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png"
             />
           </>
         )}
-        <h3 className="mt-8 mb-4 text-2xl font-bold tracking-tight text-black md:text-4xl dark:text-white">
+        <h3 className="mt-8 mb-4 text-2xl font-bold tracking-tight text-black dark:text-white">
           All Posts
         </h3>
         {!filteredBlogPosts.length && (
@@ -93,7 +96,9 @@ export default function Blog({
 
 export function getStaticProps() {
   const posts = allBlogs
-    .map((post) => pick(post, ['slug', 'title', 'summary', 'publishedAt']))
+    .map((post) =>
+      pick(post, ['slug', 'title', 'summary', 'publishedAt', 'image'])
+    )
     .sort(
       (a, b) =>
         Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt))
