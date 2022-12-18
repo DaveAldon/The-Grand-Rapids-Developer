@@ -52,10 +52,6 @@ export default function Container(props) {
         <title>The Grand Rapids Dev</title>
         <meta name="robots" content="follow, index" />
         <meta content={meta.description} name="description" />
-        <meta
-          property="og:url"
-          content={`https://https://the-grand-rapids-developer.vercel.app${router.asPath}`}
-        />
         <link
           rel="canonical"
           href={`https://https://the-grand-rapids-developer.vercel.app${router.asPath}`}
