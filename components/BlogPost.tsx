@@ -15,7 +15,8 @@ export default function BlogPost({
   const { data } = useSWR<Views>(`/api/views/${slug}`, fetcher);
   const views = data?.total;
   return (
-    <Link href={`/blog/${slug}`} className="w-full">
+    (<Link href={`/blog/${slug}`} className="w-full">
+
       <div className="w-full mb-8 flex flex-row">
         <div className="w-0 pt-2 lg:w-2/5 md:w-2/5">
           <Image
@@ -38,6 +39,7 @@ export default function BlogPost({
           <p className="text-gray-600 dark:text-gray-400">{summary}</p>
         </div>
       </div>
-    </Link>
+
+    </Link>)
   );
 }
