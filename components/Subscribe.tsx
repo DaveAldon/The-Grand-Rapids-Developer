@@ -14,11 +14,11 @@ export default function Subscribe() {
   const { data } = useSWR<Subscribers>('/api/subscribers', fetcher);
   const subscriberCount = new Number(data?.count);
 
-  const subscribe = async (e) => {
+  const subscribeUser = async (e) => {
     e.preventDefault();
     setForm({ state: Form.Loading });
 
-    const res = await fetch('/api/subscribe', {
+    const res = await fetch('/api/subscribeUser', {
       body: JSON.stringify({
         email: inputEl.current.value
       }),
@@ -53,7 +53,7 @@ export default function Subscribe() {
         Get emails from me about web development, tech, and early access to new
         articles.
       </p>
-      <form className="relative my-4" onSubmit={subscribe}>
+      <form className="relative my-4" onSubmit={subscribeUser}>
         <input
           ref={inputEl}
           aria-label="Email for newsletter"
