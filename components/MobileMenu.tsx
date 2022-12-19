@@ -30,85 +30,83 @@ export default function MobileMenu() {
     };
   }, []);
 
-  return (
-    <>
-      <button
-        className={cn(styles.burger, 'visible md:hidden')}
-        aria-label="Toggle menu"
-        type="button"
-        onClick={toggleMenu}
+  return <>
+    <button
+      className={cn(styles.burger, 'visible md:hidden')}
+      aria-label="Toggle menu"
+      type="button"
+      onClick={toggleMenu}
+    >
+      <MenuIcon data-hide={isMenuOpen} />
+      <CrossIcon data-hide={!isMenuOpen} />
+    </button>
+    {isMenuMounted && (
+      <ul
+        className={cn(
+          styles.menu,
+          'flex flex-col absolute bg-gray-100 dark:bg-gray-900',
+          isMenuRendered && styles.menuRendered
+        )}
       >
-        <MenuIcon data-hide={isMenuOpen} />
-        <CrossIcon data-hide={!isMenuOpen} />
-      </button>
-      {isMenuMounted && (
-        <ul
-          className={cn(
-            styles.menu,
-            'flex flex-col absolute bg-gray-100 dark:bg-gray-900',
-            isMenuRendered && styles.menuRendered
-          )}
+        <li
+          className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+          style={{ transitionDelay: '150ms' }}
         >
-          <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '150ms' }}
-          >
-            <Link href="/" className="flex w-auto pb-4">
-              <a>Home</a>
-            </Link>
-          </li>
-          {/* <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '175ms' }}
-          >
-            <Link href="/guestbook" className="flex w-auto pb-4">
-              <a>Guestbook</a>
-            </Link>
-          </li>
-          <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '200ms' }}
-          >
-            <Link href="/dashboard" className="flex w-auto pb-4">
-              <a>Dashboard</a>
-            </Link>
-          </li> */}
-          <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '250ms' }}
-          >
-            <Link href="/about" className="flex w-auto pb-4">
-              <a>About</a>
-            </Link>
-          </li>
-          <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '250ms' }}
-          >
-            <Link href="/blog" className="flex w-auto pb-4">
-              <a>Blog</a>
-            </Link>
-          </li>
-          <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '300ms' }}
-          >
-            <Link href="/newsletter" className="flex w-auto pb-4">
-              <a>Newsletter</a>
-            </Link>
-          </li>
-          <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '325ms' }}
-          >
-            <Link href="/tweets" className="flex w-auto pb-4">
-              <a>Tweets</a>
-            </Link>
-          </li>
-        </ul>
-      )}
-    </>
-  );
+          <Link href="/" className="flex w-auto pb-4">
+            Home
+          </Link>
+        </li>
+        {/* <li
+          className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+          style={{ transitionDelay: '175ms' }}
+        >
+          <Link href="/guestbook" className="flex w-auto pb-4">
+            <a>Guestbook</a>
+          </Link>
+        </li>
+        <li
+          className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+          style={{ transitionDelay: '200ms' }}
+        >
+          <Link href="/dashboard" className="flex w-auto pb-4">
+            <a>Dashboard</a>
+          </Link>
+        </li> */}
+        <li
+          className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+          style={{ transitionDelay: '250ms' }}
+        >
+          <Link href="/about" className="flex w-auto pb-4">
+            About
+          </Link>
+        </li>
+        <li
+          className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+          style={{ transitionDelay: '250ms' }}
+        >
+          <Link href="/blog" className="flex w-auto pb-4">
+            Blog
+          </Link>
+        </li>
+        <li
+          className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+          style={{ transitionDelay: '300ms' }}
+        >
+          <Link href="/newsletter" className="flex w-auto pb-4">
+            Newsletter
+          </Link>
+        </li>
+        <li
+          className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+          style={{ transitionDelay: '325ms' }}
+        >
+          <Link href="/tweets" className="flex w-auto pb-4">
+            Tweets
+          </Link>
+        </li>
+      </ul>
+    )}
+  </>;
 }
 
 function MenuIcon(props: JSX.IntrinsicElements['svg']) {

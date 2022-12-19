@@ -3,14 +3,14 @@ import Link from 'next/link';
 
 const SocialLink = ({ href, title }) => (
   <div className="p-2">
-    <Link href={href}>
-      <a target={'_blank'}>
-        <div className="bg-gray-200 dark:bg-gray-800 rounded flex p-4 h-full items-center">
-          <span className="title-font font-medium dark:text-white">
-            {title}
-          </span>
-        </div>
-      </a>
+    <Link href={href} target={'_blank'}>
+
+      <div className="bg-gray-200 dark:bg-gray-800 rounded flex p-4 h-full items-center">
+        <span className="title-font font-medium dark:text-white">
+          {title}
+        </span>
+      </div>
+
     </Link>
   </div>
 );

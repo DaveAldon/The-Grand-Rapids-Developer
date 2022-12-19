@@ -21,8 +21,7 @@ module.exports = withContentlayer({
     ]
   },
   experimental: {
-    legacyBrowsers: false,
-    browsersListForSwc: true
+    legacyBrowsers: false
   },
   async headers() {
     return [
@@ -31,7 +30,9 @@ module.exports = withContentlayer({
         headers: securityHeaders
       }
     ];
-  },
+  }
+  // pending this preact update: https://github.com/preactjs/preact-render-to-string/pull/259
+  /*
   webpack: (config, { dev, isServer }) => {
     // Replace React with Preact only in client production build
 
@@ -46,6 +47,7 @@ module.exports = withContentlayer({
 
     return config;
   }
+  */
 });
 
 // https://nextjs.org/docs/advanced-features/security-headers

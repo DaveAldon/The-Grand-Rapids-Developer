@@ -21,34 +21,34 @@ export default function Footer() {
       <div className="w-full max-w-2xl grid grid-cols-1 gap-4 pb-16 sm:grid-cols-3">
         <div className="flex flex-col space-y-4">
           <Link href="/">
-            <a>
-              <div className="text-gray-500 hover:text-gray-600 transition">
-                Home
-              </div>
-            </a>
+
+            <div className="text-gray-500 hover:text-gray-600 transition">
+              Home
+            </div>
+
           </Link>
           <Link href="/about">
-            <a>
-              <div className="text-gray-500 hover:text-gray-600 transition">
-                About
-              </div>
-            </a>
+
+            <div className="text-gray-500 hover:text-gray-600 transition">
+              About
+            </div>
+
           </Link>
           <Link href="/newsletter">
-            <a>
-              <div className="text-gray-500 hover:text-gray-600 transition">
-                Newsletter
-              </div>
-            </a>
+
+            <div className="text-gray-500 hover:text-gray-600 transition">
+              Newsletter
+            </div>
+
           </Link>
         </div>
         <div className="flex flex-col space-y-4">
           <Link href="/blog">
-            <a>
-              <div className="text-gray-500 hover:text-gray-600 transition">
-                Blog
-              </div>
-            </a>
+
+            <div className="text-gray-500 hover:text-gray-600 transition">
+              Blog
+            </div>
+
           </Link>
           {/* <ExternalLink href="https://twitter.com/leeerob">
             Twitter
@@ -57,11 +57,11 @@ export default function Footer() {
             GitHub
           </ExternalLink>
           <Link href="/tweets">
-            <a>
-              <div className="text-gray-500 hover:text-gray-600 transition">
-                Tweets
-              </div>
-            </a>
+
+            <div className="text-gray-500 hover:text-gray-600 transition">
+              Tweets
+            </div>
+
           </Link>
           {/* <ExternalLink href="https://www.youtube.com/channel/UCZMli3czZnd1uoc1ShTouQw">
             YouTube
