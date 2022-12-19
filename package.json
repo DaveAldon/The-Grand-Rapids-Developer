@@ -7,7 +7,6 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
-    "unfreeze": "pnpm install --frozen-lockfile=false",
     "clear-tracked-cache": "git rm -r --cached . && git add --all ."
   },
   "dependencies": {
