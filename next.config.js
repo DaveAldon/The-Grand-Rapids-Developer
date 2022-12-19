@@ -22,8 +22,7 @@ module.exports = withContentlayer({
   },
   experimental: {
     legacyBrowsers: false,
-    browsersListForSwc: true,
-    newNextLinkBehavior: false
+    browsersListForSwc: true
   },
   async headers() {
     return [
