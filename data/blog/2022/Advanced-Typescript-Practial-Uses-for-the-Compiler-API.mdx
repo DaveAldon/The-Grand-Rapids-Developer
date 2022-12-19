@@ -1,0 +1,147 @@
+---
+title: 'Advanced Typescript - Practical Uses for the Compiler API'
+publishedAt: '2022-10-20'
+summary: 'This post seeks to provide a simple, practical use of the Compiler API using native Typescript, and fulfill a specific need I have in my own work through a small project.'
+image: 'https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png)
+
+[![](https://img.shields.io/badge/Originally%20Posted%20%40-Bravo%20LT-blue?style=for-the-badge)](https://www.bravolt.com)
+
+The Typescript Compiler API is the technology behind transpiling Typescript into Javascript. The library behind this process is available for anyone to use, and you can accomplish a lot of interesting tasks with it. However, if you check out the [documentation](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API) for the Compiler API, it can be a bit daunting and complicated.
+
+There are projects that seek to abstract the Compiler API out and make it easier to use, such as [ts-morph](https://ts-morph.com/). However, there is a lot of value in both understanding how something _really_ works, and keeping reliance on third-party libraries to a minimum.
+
+This post seeks to provide a simple, practical use of the Compiler API using native Typescript, and fulfill a specific need I have in my own work through a small project.
+
+## Breakdown
+
+The Compiler API provides several core functionalities, including the following of interest:
+
+1.  **Compiling** - creating files, especially Javascript, from Typescript code
+2.  **Transforming** - a step in the compilation process which can manipulate source code at compile time
+3.  **Linting** - type and syntax checking of source code
+4.  Creating **Abstract Syntax Trees** (AST) - a graph representation of source code used by compilers to read and generate code
+
+Our project will focus primarily on linting and transforming, and will by nature involve a small portion of the compiling functionality. Let’s start with our goal:
+
+## The Project: Dynamic Code Generation
+
+Over a year ago I wrote a [blog post](https://www.bravolt.com/post/generate-index-can-save-your-sanity) going over how the [vscode-generate-index](https://github.com/fjc0k/vscode-generate-index) plugin has helped solve a lot of tedious problems we may face in the Typescript world. However, if I wasn't following my own advice about [continuous improvement](https://www.bravolt.com/post/how-to-adopt-a-continuous-improvement-culture), I would have never thought to start working on **generate-ts**, my new project. You can read more about why I wanted to create an alternative to the index generator plugin in my [generate-ts' readme](https://github.com/DaveAldon/generate-ts). To keep things simple, I wanted a way to accomplish the following:
+
+1.  Dynamically generate Typescript code by using simple, maintainable patterns
+2.  The project needs to use native Typescript code and core libraries
+3.  The resulting code we create needs to be checked for errors
+
+## How It Works
+
+The project’s main point of entry is by invoking it via its **npx** command (you can read more about the json interaction in the [repository](https://github.com/DaveAldon/generate-ts)), or programmatically like this:
+
+![](https://static.wixstatic.com/media/e862a1_400d7783c2da4a7bb25707b82384fa9c~mv2.png/v1/fill/w_740,h_223,al_c,lg_1,q_85,enc_auto/e862a1_400d7783c2da4a7bb25707b82384fa9c~mv2.png)
+
+This will create a file called **test.ts** in the **src** folder. Its contents will be based on how many files it finds with an extension that matches **.screen.ts**. Let’s say it finds two files, which means that the **codePatterns** array will run twice and result in the following code written to the **test.ts** file:
+
+```typescript
+import { ExampleScreen } from './Example.screen';
+import { SecondScreen } from './Second.screen';
+```
+
+The inner steps taken to accomplish all of this can be simplified:
+
+1.  Find all files that match the file extension pattern
+2.  Concatenate code strings based on the given patterns for each file found
+3.  Compile and lint the resulting code for Typescript safety
+4.  Write the code to a provided file name and path
+
+**Step 3**, the compiling and linting of the code, is what we’re concerned with, as this is where the Typescript Compiler API comes in. How do we lint code? With a diagnostic.
+
+## Diagnosing Code
+
+A diagnostic is the Compiler API’s terminology for linting a **program**. A program is TypeScript terminology for your whole application. Let’s take a look at the entire diagnosis code for my project below:
+
+![](https://static.wixstatic.com/media/e862a1_781c6f13910d45d0bfb5b321bf87a195~mv2.png/v1/fill/w_665,h_842,al_c,q_90,enc_auto/e862a1_781c6f13910d45d0bfb5b321bf87a195~mv2.png)
+
+The function takes in a **program** object, and logs any errors to the console. In this case, the magic happens with this line:
+
+const diagnostics = ts.getPreEmitDiagnostics(program);
+
+Any issues with the diagnosis will be returned by this function. Without any other customization, this will run basic type checking and find any syntax errors. If there’s nothing returned by this function, then our code assumes that the resulting code to be written will be fine.
+
+The problem is, we can’t just pass a string of code to be diagnosed. Now, code strings can be compiled quite easily like this:
+
+```typescript
+const code = `const test: number = 1;`;
+const transpiledCode = ts.transpileModule(code, {}).outputText;
+```
+
+But how can we run any diagnosis on this code? We need a **program** that I’ve been mentioning. We can create a program in a single line, as long as the code is coming from an already existing file:
+
+```typescript
+const program = ts.createProgram(['src/test.ts'], {});
+```
+
+A diagnosis can then be run on this object. But what about in our case, where we don’t have any code written yet? How do we create a program from code strings? We need to use something that’s called a **custom Compiler Host**.
+
+## Custom Compiler Host
+
+A Compiler Host represents the user’s system with an API for reading files, checking directories and case sensitivity, etc. A Compiler Host is capable of changing a lot of behavior for a program. It can override the way the Typescript compiler resolves modules, change newline characters, and update the default primitive type paths Typescript uses to know what “strings” and “numbers” are, among other things.
+
+In our case, we don’t need a lot of customization, but we do need to be able to create a program from a **source file**. Take a look at my project’s Compiler Host implementation below:
+
+![](https://static.wixstatic.com/media/e862a1_086b48424b1c405b9edd7cd7b7af79cd~mv2.png/v1/fill/w_716,h_575,al_c,lg_1,q_90,enc_auto/e862a1_086b48424b1c405b9edd7cd7b7af79cd~mv2.png)
+
+We can see that this function takes in a source file object, not a code string. We’ve been working backwards this whole time, but there isn’t much left at this point. To create a source file from a code string, it’s quite simple:
+
+const sourceFile = ts.createSourceFile(fileName, code, ts.ScriptTarget.ESNext);
+
+We give the **createSourceFile** function a file name, a code string, and the Typescript language standard we want it conformed to.
+
+## Putting It All Together
+
+Working forwards now, we can do the following:
+
+1.  Create a source file from a code string we generate in-memory
+2.  Pass the source file to our custom Compiler Host, resulting in a **program** object
+3.  The **program** can be passed to our diagnostics logic, which can result in either a clean program, or errors
+4.  We can create a **printer** from our clean program, which lets us extract the code string out of the compiled program:
+
+```typescript
+const printer = ts.createPrinter({
+  newLine: ts.NewLineKind.CarriageReturnLineFeed
+});
+const code = printer.printFile(sourceFile);
+```
+
+We can then simply write this code string out to a file using **writeFileSync** from the **fs** library:
+
+```typescript
+writeFileSync(filePath, code, { encoding: 'utf-8' });
+```
+
+And we’re done! A fully type-checked and linted Typescript file has been created by our own Compiler API logic.
+
+## Conclusion
+
+In many cases, the Compiler API is used to traverse ASTs and create code more programmatically, like this:
+
+```typescript
+const statement = ts.factory.createVariableStatement(
+  [],
+  ts.factory.createVariableDeclarationList(
+    [
+      ts.factory.createVariableDeclaration(
+        ts.factory.createIdentifier('testVar'),
+        undefined,
+        ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+        ts.factory.createStringLiteral('test')
+      )
+    ],
+    ts.NodeFlags.Const
+  )
+);
+```
+
+And a lot of projects use it to [extract and emit Type documentation](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#using-the-type-checker) automatically. There are endless possibilities, and I hope that this simple project shows an easy-to-understand implementation of one of the more complex Typescript techniques.
+
+Once again, you can check out the source code of my [generate-ts](https://github.com/DaveAldon/generate-ts) npm package for more examples of interacting with the Compiler API.

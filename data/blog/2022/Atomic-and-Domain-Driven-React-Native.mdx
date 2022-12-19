@@ -1,0 +1,79 @@
+---
+title: 'Atomic and Domain Driven React-Native Development'
+publishedAt: '2022-11-10'
+summary: 'Atomic and Domain Driven development are two practices that seek to decouple, modularize, and create easy to maintain software projects. In this post, I want to share how I’ve combined the spirit of these two methodologies, by taking their best and simplest traits, and apply them to React Native.'
+image: 'https://static.wixstatic.com/media/e862a1_5379a0d4114b4e509698161b0b42ac9c~mv2.png/v1/fill/w_740,h_492,al_c,lg_1,q_90,enc_auto/e862a1_5379a0d4114b4e509698161b0b42ac9c~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/e862a1_5379a0d4114b4e509698161b0b42ac9c~mv2.png/v1/fill/w_740,h_492,al_c,lg_1,q_90,enc_auto/e862a1_5379a0d4114b4e509698161b0b42ac9c~mv2.png)
+
+[![](https://img.shields.io/badge/Originally%20Posted%20%40-Bravo%20LT-blue?style=for-the-badge)](https://www.bravolt.com)
+
+Atomic and Domain Driven development are two practices that seek to decouple, modularize, and create easy to maintain software projects. In this post, I want to share how I’ve combined the spirit of these two methodologies, by taking their best and simplest traits, and apply them to React Native. So, what are these two design patterns?
+
+**Atomic** design seeks to break things down into “atoms” and “molecules” so that our work is easier to modify. It has a heavier focus on building user interfaces and compressing elements into as many units as possible.
+
+**Domain Driven** design focuses on a broader sense of placing work into “domain” specific structures according to the business model. It looks to isolate domains, or core functionalities, so that they’re self-sustaining and encapsulated.
+
+Let’s dive into our overall strategy, and how Atomic and Domain Driven design can be used in thoughtful combination via some simple examples in a React Native project.
+
+## Domain Driven Structure
+
+If we take the business needs of our project, we can begin to organize our app into categories of core functionalities. Take, for example, a shopping app that lets you buy items from a grocery store. We can break the app’s core functionalities into the following domains:
+
+1.  **Login** - All of the functionality surrounding the user’s ability to login to the app
+2.  **Grocery Items** - Screens that let the user look for items to buy
+3.  **Cart** - Screens that let the user manage their cart
+4.  **Checkout** - Screens that walk the user through a purchase
+5.  **API** - All of the abstracted functionality that dictates the app’s outside interactions
+6.  **Style** **System** - Our design tokens, shared styles, and light/dark mode handling
+
+A practical way to look at this is making sure in our React Native project, we organize these domains into major folders in our directory:
+
+![](https://static.wixstatic.com/media/e862a1_c6cf5a33d82a4ad585b7090f84a75665~mv2.png/v1/fill/w_360,h_300,al_c,lg_1,q_85,enc_auto/e862a1_c6cf5a33d82a4ad585b7090f84a75665~mv2.png)
+
+To follow the best of what Domain Driven design gives us, we need to make sure that each of these domains contain everything they need to work. Now, where this methodology can fail is how far you take this encapsulation. What I’ve found to work best is isolating code that is **shared** versus what is **unique** to a domain. The Style and API domain are good examples of this. Each domain will interact with these two domains to some degree, and that’s okay. The point is making sure that you’re able to make changes to a domain without breaking another. A domain’s reliance on a “shared” domain should be explicit and easy to drop in and out with another implementation painlessly.
+
+Take note that this is a basic example. There are other domains needed for a React Native project depending on your needs, such as a Navigation domain that handles all of the screen management, a high-level app domain that serves as the entry point for state providers, and more.
+
+## Atomic Design
+
+As we enter into the details of a domain, the Atomic Design pattern starts to become more relevant. Atomic Design can focus a lot on templating, which I’m not a huge fan of when you need to adapt to change frequently. Instead, I focus on the atomization of complex React Native components. When you look at a component, ask yourself the following:
+
+_Is this component as dumb as possible?_
+
+This means that if your component utilizes local state, performs a lot of calculations, or contains a lot of branches, it’s too smart, and **cannot be accurately unit tested**. Now, we can go too far with this idea and abstract for an eternity, so it’s good to have a line to draw on _which_ components should be dumb. My line is the following:
+
+1.  If the component is a React Native Screen, it’s ok for it to be a little smarter and have conditional renders, for example. But it’s **not okay to use local state**
+2.  If the component is rendered inside of a screen, which will be the vast majority of components, it needs to be dumb
+
+How do we make a component dumb?
+
+1.  Make sure that **everything it needs** lies in its props. It should only serve to display what it’s given
+2.  Stop using local state, and instead use custom hooks. I have a [guide](https://www.bravolt.com/post/react-custom-hooks-vs-local-state) for this!
+3.  Stop using inline styling
+
+What this can look like in practice helps exemplify the modularity we’re looking for:
+
+![](https://static.wixstatic.com/media/e862a1_c6146281ac4e4a6fb087810dcf8fedf0~mv2.png/v1/fill/w_360,h_426,al_c,lg_1,q_85,enc_auto/e862a1_c6146281ac4e4a6fb087810dcf8fedf0~mv2.png)
+
+Notice how this Checkout domain has a Screens folder, which contains all of the custom hooks and child component folder structures this screen needs. I also like to place a component’s relevant test file alongside the actual implementation as well. This makes it incredibly easy to find where a test is, and it keeps the domain even more self-sufficient.
+
+If we want more screens in the Checkout domain process, we can add more screen folders with their own dependencies. But what if the two screens share components, styles, or hooks? We can easily extend our structure like this:
+
+![](https://static.wixstatic.com/media/e862a1_72d511fa060e4fd7b6bdac2636d6d5cc~mv2.png/v1/fill/w_360,h_241,al_c,lg_1,q_85,enc_auto/e862a1_72d511fa060e4fd7b6bdac2636d6d5cc~mv2.png)
+
+This way anything that needs to be shared is at the top level of a domain, and everything that’s specific to a screen only lies inside its respective screen folder.
+
+## Conclusion
+
+If you implement the structures I’ve shown, or something like them that better fits your needs, you’ll start to see the following happen:
+
+1.  Components become less coupled with each other
+2.  Components are easier to unit test in isolation
+3.  Stateful logic is possible to test now because it all lies in custom hooks
+4.  Stylesheets are in their own style files, so design token imports, for example, don’t have to be in a component file, cutting down on bloat
+5.  Creating a **new** domain based on changing requirements becomes easier, as everything is so decoupled and extensible that you can drag and drop in new work without breaking everything
+6.  Your project structure looks really nice, and onboarding developers doesn’t carry as much of a learning curve
+
+I hope that if you’ve been looking for some inspiration on a better way to organize your React Native projects, this post gives you some practical and simple ideas.

@@ -1,0 +1,48 @@
+---
+title: 'React Custom Hooks vs. Local State'
+publishedAt: '2022-05-23'
+summary: 'There’s plenty to be said about Hooks vs. Classes, but this post is going to be hyper-focused on “why” and “when” you should use Custom Hooks instead of Local State.'
+image: 'https://static.wixstatic.com/media/955c63_05d6b307095c42688e0cc64ba7dc565d~mv2.png/v1/fill/w_740,h_414,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_05d6b307095c42688e0cc64ba7dc565d~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/955c63_05d6b307095c42688e0cc64ba7dc565d~mv2.png/v1/fill/w_740,h_414,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_05d6b307095c42688e0cc64ba7dc565d~mv2.png)
+
+[![](https://img.shields.io/badge/Originally%20Posted%20%40-Bravo%20LT-blue?style=for-the-badge)](https://www.bravolt.com)
+
+Version 16.8 of React introduced the revolutionary Hook paradigm to interact with React State, instead of the older Class-based system. There’s plenty to be said about [Hooks vs. Classes](https://blog.bitsrc.io/6-reasons-to-use-react-hooks-instead-of-classes-7e3ee745fe04), but this post is going to be hyper-focused on “why” and “when” you should use Custom Hooks instead of Local State.
+
+## What’s the difference?
+
+Local State is when you use the **useState**, **useEffect**, or some other Hook-based function to create and manage stateful objects _directly inside a component_. Here is an example:
+
+![](https://static.wixstatic.com/media/955c63_16d9af9a360543dca366b34a654594fc~mv2.png/v1/fill/w_740,h_600,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/955c63_16d9af9a360543dca366b34a654594fc~mv2.png)
+
+This is simple enough, and gets the job done, right? The problem is revealed when our stateful interactions become complex. If we have a **useEffect** function with dependencies, or button press events that trigger several side effects, our component starts to become more of a state manager than just a component. We can immediately identify three needs that **Local State** does **not** fulfill from this example:
+
+- Components should be as dumb as possible (they show whatever they’re given, and perform minimal logic, if any)
+- Stateful logic should be modular and reusable
+- Stateful logic should be easily to Unit Test
+
+Let’s look at a **Custom Hook** example and see where these three points fit in:
+
+![](https://static.wixstatic.com/media/955c63_c8df8adbf98f44c3bf934b02c968debd~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_c8df8adbf98f44c3bf934b02c968debd~mv2.png)
+
+And then the component can use this Hook like so:
+
+![](https://static.wixstatic.com/media/955c63_5b0ad1424fd8498b96930dcb7042aa0c~mv2.png/v1/fill/w_740,h_464,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_5b0ad1424fd8498b96930dcb7042aa0c~mv2.png)
+
+This fulfills our three needs in the following ways:
+
+- The component is as dumb as possible. By offloading all of the side effects, button press functions, and any other state interactions, the component is quite simple. It shows some information, and interacts with whatever it’s given. There is more code making up the component than anything else
+- Because we’ve offloaded all of the state logic, we can import this Custom Hook anywhere we want. It’s easily reusable, and has a single point of failure
+- The **useEffect** and button press functions are now easily Unit Testable. Because we’ve offloaded our logic to a Custom Hook, we now have direct access to everything inside of it for test coverage. The functions that used to be internal to the component aren’t hidden anymore!
+
+The last point is very important to me. Unit Testing is incredibly valuable, and unless you’re using Custom Hooks, your stateful logic is going to be very painful to test, or just impossible. The moment you offload your stateful logic, even if your needs are as simple as these examples, you can immediately get coverage and test the mutations, side effects, and internal functions. Let’s look at an example of this using the **@testing-library/react-hooks** library:
+
+![](https://static.wixstatic.com/media/955c63_be33595f71584d329b2df2fe0b0da1a0~mv2.png/v1/fill/w_740,h_270,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/955c63_be33595f71584d329b2df2fe0b0da1a0~mv2.png)
+
+This shows how easy it is to access the internal functions of a Custom Hook, and check for asynchronous events! If you’d like to learn more about the React Testing Library, [check out their docs here.](https://testing-library.com/docs/react-testing-library/intro/)
+
+## Conclusion
+
+Is Unit Testing important to you? Do you like your code to be modular and containerized? Do you wish your overly complicated, state interacting components were simpler? Then you need to start incorporating Custom Hooks into your workflow. They’re very easy to implement, easy to Unit Test, reusable, and modular. The next time you start thinking about using Local State again, remember the power of Custom Hooks.

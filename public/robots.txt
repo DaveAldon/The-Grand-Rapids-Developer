@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://the-grand-rapids-developer.vercel.app/sitemap.xml

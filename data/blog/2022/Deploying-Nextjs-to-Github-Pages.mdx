@@ -1,0 +1,84 @@
+---
+title: 'Deploying Next.js to GitHub Pages'
+publishedAt: '2022-06-16'
+summary: 'Next.js is easy to get into using its own getting started guide, however in this post we’re interested in getting a Next.js website deployed to GitHub Pages. I’m going to share my lessons learned and what they don’t tell you about the deployment process.'
+image: 'https://static.wixstatic.com/media/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png/v1/fill/w_740,h_427,al_c,lg_1,q_85,enc_auto/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png'
+---
+
+![](https://static.wixstatic.com/media/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png/v1/fill/w_740,h_427,al_c,lg_1,q_85,enc_auto/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png)
+
+[![](https://img.shields.io/badge/Originally%20Posted%20%40-Bravo%20LT-blue?style=for-the-badge)](https://www.bravolt.com)
+
+Next.js is a React framework that lets us build React web applications through a layer of automatic configuration abstraction. It pushes the React component paradigm towards a page-based structure, and is great for static and, through [automatic static optimization](https://nextjs.org/docs/advanced-features/automatic-static-optimization), dynamic websites. It’s one of the fastest growing frameworks since its inception in 2016, and with good reason. It’s used by **Hulu**, **TikTok**, and **Twitch**, to name a few. Next.js is easy to get into using its own [getting started guide](https://nextjs.org/docs/getting-started), however in this post we’re interested in getting a Next.js website deployed to **GitHub Pages**. I’m going to share my lessons learned and what they _don’t_ tell you about the deployment process. In the end, you’ll have a public website hosted for free by GitHub, and built with React and Next.js. Let’s go through the process step-by-step.
+
+## Step 1: The Next.js project
+
+Follow the official [Next.js getting started guide](https://nextjs.org/docs/getting-started) up until the point where you can run the build and view the compiled website locally. Then change the following:
+
+1. Add this command to your **package.json** file:
+
+```
+"export": "next export"
+```
+
+2. Change the **next.config.js** file to **next.config.mjs**, and replace everything inside with the following:
+
+```js
+_/\*\*_ _\* @type {import('next').NextConfig}_ _\*/_ const nextConfig = { images: { loader: 'akamai', path: '', }, assetPrefix: './', }; export default nextConfig;
+```
+
+The extension change is so that the compiler can understand exports, and the update we make inside the file solves a couple of problems:
+
+1.  Next.js uses its own image optimization, which doesn’t play nicely with GitHub Pages by default. We change this to the **akamai** option which works properly. You can read more about this [here](https://nextjs.org/docs/basic-features/image-optimization)
+2.  We need to define an **asset prefix** because GitHub uses Jekyll by default to build static pages, and Jekyll ignores all files prefixed with "\_" which Next.js uses
+
+## Step 2: GitHub Repository Setup
+
+GitHub Pages is a great, free service that lets us publish static websites automatically and directly from our own repositories. I love using this service to get projects running in a “production” environment, which lets us get proof-of-concepts into the hands of users super fast.
+
+Add a new branch with any name you want. I’m using the name “public” in this example. Then, go to your repository **Settings**, then **Pages**, then add the public branch as the source. Make sure the root folder is also selected, and then hit **Save**.
+
+![](https://static.wixstatic.com/media/955c63_166f77cd866a4937bf31f975fa8067cd~mv2.png/v1/fill/w_740,h_285,al_c,lg_1,q_85,enc_auto/955c63_166f77cd866a4937bf31f975fa8067cd~mv2.png)
+
+After this, your page will build, and GitHub will share the public URL that you will use to reach the site.
+
+![](https://static.wixstatic.com/media/955c63_8762171c562942ecb9769eb4d1be3a41~mv2.png/v1/fill/w_740,h_128,al_c,lg_1,q_85,enc_auto/955c63_8762171c562942ecb9769eb4d1be3a41~mv2.png)
+
+## Step 3: GitHub Actions
+
+Your website won’t show anything yet, because GitHub doesn’t know that your repository needs to be compiled. This can be handled automatically using GitHub actions, which has free continuous integration minutes we can leverage. We’re going to use a premade GitHub action from the marketplace that contains all the code needed to do this.
+
+Create a **workflows** folder inside your **.github** folder, and inside this new folder create a **.yml** file. The name can be whatever you like.
+
+![](https://static.wixstatic.com/media/955c63_fe6be7bb41054a208118caeea1246cbb~mv2.png/v1/fill/w_339,h_99,al_c,q_85,enc_auto/955c63_fe6be7bb41054a208118caeea1246cbb~mv2.png)
+
+Inside this file will be the commands that GitHub actions will run. You can copy [my example here](https://github.com/DaveAldon/Next.js-and-GitHub-Pages-Example/blob/main/.github/workflows/node.js.yml). Once you commit these files, the actions tab for your repository will show your action running. Actions are triggered automatically after any commits by default.
+
+![](https://static.wixstatic.com/media/955c63_e1264a0dba244cb291af3fab4e681cfd~mv2.png/v1/fill/w_740,h_224,al_c,lg_1,q_85,enc_auto/955c63_e1264a0dba244cb291af3fab4e681cfd~mv2.png)
+
+Once your action has finished building, you can navigate to the URL GitHub created for your repository. If everything worked, and the actions completed successfully, you’ll see a screen like this:
+
+![](https://static.wixstatic.com/media/955c63_10aa50e8870347b5b4cbf957b26f31ec~mv2.png/v1/fill/w_375,h_343,al_c,q_85,enc_auto/955c63_10aa50e8870347b5b4cbf957b26f31ec~mv2.png)
+
+Congratulations! You’ve successfully deployed a Next.js web application to GitHub Pages! If you’d like to see a full project, you can check out an example repository I created with the absolute minimum files needed [here](https://github.com/DaveAldon/Next.js-and-GitHub-Pages-Example).
+
+If you want to see this repository’s deployment in action, you can visit the website [here](https://davealdon.github.io/Next.js-and-GitHub-Pages-Example/).
+
+### Troubleshooting
+
+#### Fork problems
+
+If you're forking this repo and you're having problems getting the action to run, or your Github pages is only serving the readme instead of the generated website, make sure you're doing the following:
+
+1. When you create a fork, make sure to UNCHECK the **Copy the main branch only** checkbox. You need both branches out of the box
+2. Make sure that the `public` branch is not a clone of `main`, but instead contain the build output of the Github action
+
+#### Issues starting from scratch
+
+If you want to implement this workflow on your own without forking, and you want to know how to setup the `public` branch so that it's not a clone of `main`, make sure you're doing the following:
+
+1. Create the `public` branch based on main, it's ok that it's a copy of this branch right now
+2. Turn Github pages on (if it was on before you create the branch, turn it off, re-create the `public` branch, and turn it on)
+3. Run the Github action via a commit trigger or manually
+
+The Github action requires Github pages to be on, which in turn requires the `public` branch. The Github action will overwrite everything in the `public` branch if it runs successfully.
