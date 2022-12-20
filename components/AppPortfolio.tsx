@@ -84,7 +84,7 @@ const LeftImageItem = ({
         <p className="leading-relaxed text-base dark:text-white">
           {description}
         </p>
-        <div className="flex mt-3 width-full space-x-3">
+        <div className="flex flex-col lg:flex-row md:flex-row sm:flex-row mt-3 space-x-0 lg:space-x-3 md:space-x-3 sm:space-x-3 items-center justify-center lg:items-start lg:justify-start lg:items-start lg:justify-start">
           {iosLink ? <IosBadge link={iosLink} /> : null}
           {androidLink ? <AndroidBadge link={androidLink} /> : null}
         </div>
