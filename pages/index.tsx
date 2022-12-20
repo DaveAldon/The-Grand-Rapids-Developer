@@ -4,9 +4,6 @@ import Link from 'next/link';
 import Container from '../components/Container';
 import BlogPostCard from '../components/BlogPostCard';
 import Subscribe from '../components/Subscribe';
-import VideoCard from '../components/VideoCard';
-import Skills from 'components/Skills';
-import Industries from 'components/Industries';
 
 export default function Home({ videos }) {
   return (

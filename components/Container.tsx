@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import NextLink from 'next/link';
 import cn from 'classnames';
@@ -14,18 +13,17 @@ function NavItem({ href, text }) {
   const isActive = router.asPath === href;
 
   return (
-    (<NextLink
+    <NextLink
       href={href}
       className={cn(
         isActive
           ? 'font-semibold text-gray-800 dark:text-gray-200'
           : 'font-normal text-gray-600 dark:text-gray-400',
         'hidden md:inline-block p-1 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-all'
-      )}>
-
+      )}
+    >
       <span className="capsize">{text}</span>
-
-    </NextLink>)
+    </NextLink>
   );
 }
 
@@ -50,7 +48,7 @@ export default function Container(props) {
   return (
     <div className="bg-gray-50 dark:bg-gray-900">
       <Head>
-        <title>The Grand Rapids Dev</title>
+        <title>Grand Rapids Developer</title>
         <meta name="robots" content="follow, index" />
         <meta content={meta.description} name="description" />
         <link
