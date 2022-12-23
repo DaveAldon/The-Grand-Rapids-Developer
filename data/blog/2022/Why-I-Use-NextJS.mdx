@@ -1,0 +1,49 @@
+---
+title: 'Why I Use NextJS'
+publishedAt: '2022-12-21'
+summary: 'My first blog post for Michigan Software Labs is about a tech stack that I use on almost all of my personal website projects: NextJS. I wanted to share the three main reasons why I use it.'
+image: 'https://optimise2.assets-servd.host/gratis-creeper/production/blog/NextJS-Banner.jpg?w=870&h=579&q=80&auto=format&fit=crop&dm=1671636105&s=1d382502e289bf5b724e54a8248452d1'
+---
+
+![Why I use NextJS](https://optimise2.assets-servd.host/gratis-creeper/production/blog/NextJS-Banner.jpg?w=870&h=579&q=80&auto=format&fit=crop&dm=1671636105&s=1d382502e289bf5b724e54a8248452d1)
+
+[![](https://img.shields.io/badge/Originally%20Posted%20%40-Michigan%20Labs-blue?style=for-the-badge)](https://michiganlabs.com/news/why-i-use-nextjs)
+
+Is NextJS right for your next project? Are you reevaluating your current website and looking for an alternative framework to re-architect it around? Are you scouting around for a more modern approach to your frontend? In this post, I want to help break down three specific core functionalities that NextJS excels at, so that you can make a well-informed decision on your upcoming project’s major framework.
+
+Simply put, NextJS is a framework for **React**. It is not for frameworks like Angular or Vue. What it does for your React project is provide a ton of foundation to a website, including routing, server-side rendering, API proxying, and incremental adoption. It also introduces a lot of efficiency techniques for development, such as using the Rust based transpiler **SWC** instead of **Babel**.
+
+If you create a React website without a framework like NextJS, and need to incorporate these foundations, you’ll find yourself creating a lot of this functionality from scratch, or piece-mealing many libraries together. To make a decision on whether or not NextJS is right for you, I believe server-side rendering, SEO, and upgradability are some of the more important factors to consider. We’ll primarily focus on these three core functionalities next.
+
+## Server-Side Rendering
+
+What is server-side rendering? It’s the most common method for displaying content on the screen, and relies on a server sending all of the needed information to your browser. By contrast, client-side rendering typically depends on rendering content in a browser using Javascript. In this case, the server sends a simple HTML file, and Javascript handles all of the content inside the browser. Vue and React, among other frameworks, are great examples of tools that use client-side rendering. *But wait!* Didn’t I say that NextJS is a **React** framework? If that’s the case, then how can React render client-side, and NextJS server-side, being built on top of React?
+
+NextJS is able to **pre-render** content in two ways: **server-side rendering**, which has a slower [time to first byte](https://developer.chrome.com/docs/lighthouse/performance/time-to-first-byte/), but guarantees content is always up to date; and **static generation**, where NextJS pre-renders your content into HTML at build time, which is less up-to-date but significantly faster.
+
+The downside to a server-side rendering approach depends on the complexity of your project. If you need thousands of pages, you likely don’t want all of your content being regenerated on every request. NextJS can perform **incremental static regeneration**, allowing you to choose *when* pages are compiled. You can also choose to render some things client-side. However, the danger of having a mix of client and server-side code is that browser APIs, for example, won’t be available in both types. So you have to be prepared to isolate code that is needed for each context, otherwise the complexity can get out of control, and your code base could become confusing. With that said, the major benefit is being *able to choose* between client and server-side rendering on a case-by-case basis with your website content.
+
+If you follow proper modularization and component-based structuring with your NextJS React project, the complexities I’ve mentioned can be easily mitigated, and used to your advantage. Besides the organization of React components and pages themselves, Hooks can be used for more dynamic content, and functions such as **getStaticProps** can be used to generate static content at build time, caching the content in the process.
+
+## SEO
+
+You’ll see that when people review NextJS, they always mention the benefits of SEO. The reality is that Google is *pretty good* at crawling through pages and rendering content, even if you don’t have any technical solution to SEO. That being said, if SEO is a huge priority for your web project, NextJS *can* help give you that slight edge you’re looking for. Here’s a couple examples of what that might look like:
+
+1.  Server-side rendering makes sure that the web content is ready to go before the site is even loaded, which means that Google’s bots are able to render everything much more efficiently
+2.  You can also use the NextJS webpack configuration to switch your **React** dependencies to [**Preact**](https://github.com/preactjs/preact) in a production environment, to find even more efficient loading times
+3.  Generating sitemaps on each build is quite easy to implement, and guarantees further finishing touches on helping Google recognize everything, especially changing content, exactly as you intend
+
+These points all help improve your [Web Core Vitals](https://web.dev/vitals/) metric. However, on average these benefits are small.
+
+## Upgradability
+
+The last core functionality I wanted to go over is the upgradability of NextJS as a library. With Node projects, we have access to thousands of amazing open-source libraries. The downside is that we can frequently face deprecation, abandonment by the owner, or even with financially backed libraries, *api breaking updates.* My experience with NextJS regarding this has been extremely positive. Vercel, the company that created NextJS, is highly cognizant of how major updates can interfere with large codebases. Web libraries change often, and we don’t have time to refactor everything once a month. There are a couple tools to help with this for whenever a breaking change is introduced to a new version, or if you want to convert your entire website framework to NextJS:
+
+1.  [Codemods](https://nextjs.org/docs/advanced-features/codemods) - these are **npx** commands that let you preview and automatically transform specific parts in your entire project in order to follow a new API standard
+2.  [Incremental adoption](https://nextjs.org/docs/migrating/incremental-adoption) - if you have an existing non-NextJS project, or previous major version, you can gradually incorporate the major tenets of NextJS in a manageable way
+
+## Conclusion
+
+NextJS offers so many foundations that are needed with developing a website, that you’ll find yourself having more time to work on the important part: the content. You don’t need to reinvent the wheel with routing, api proxying, cache management, static vs. client-side rendered content, and more. And personally, I love how friendly each of their major updates are to adopt into a codebase. I can spend more time on the UI or the actual functionality the user will experience, and leave the rest to NextJS.
+
+Still not sure? Check out the NextJS [showcase](https://nextjs.org/showcase) where you can see real, familiar websites that are built off of this framework.

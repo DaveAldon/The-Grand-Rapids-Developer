@@ -17,7 +17,8 @@ module.exports = withContentlayer({
       'drive.google.com', // Google Drive Images
       'is3-ssl.mzstatic.com', // Apple Images
       'is2-ssl.mzstatic.com', // Apple Images
-      'is1-ssl.mzstatic.com' // Apple Images
+      'is1-ssl.mzstatic.com', // Apple Images
+      'optimise2.assets-servd.host' // Optimise Images
     ]
   },
   experimental: {
