@@ -77,15 +77,8 @@ export default function Subscribe() {
       ) : (
         <p className="text-sm text-gray-800 dark:text-gray-200">
           {`${
-            subscriberCount > 0 ? subscriberCount.toLocaleString() : '-'
-          } subscribers – `}
-          <a
-            href="https://www.getrevue.co/profile/grandrapidsdev"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View all issues
-          </a>
+            subscriberCount !== 0 ? subscriberCount.toLocaleString() : '-'
+          } subscribers`}
         </p>
       )}
     </div>

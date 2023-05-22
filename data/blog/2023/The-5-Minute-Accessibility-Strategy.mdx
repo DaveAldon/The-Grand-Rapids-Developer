@@ -1,0 +1,122 @@
+---
+title: 'The 5 Minute Accessibility Strategy'
+publishedAt: '2023-05-18'
+summary: 'We discuss how you can make a plan in just 5 minutes to provide accessibility in your mobile app.'
+image: 'https://optimise2.assets-servd.host/gratis-creeper/production/blog/1642672_social-graphic-for-blog-post_Op1_Original_051723.jpg?w=1125&auto=compress%2Cformat&fit=crop&dm=1684439443&s=58af9d7a3debd84a717f9c2ab6b5daef'
+---
+
+![The 5 Minute Accessibility Strategy](https://optimise2.assets-servd.host/gratis-creeper/production/blog/1642672_social-graphic-for-blog-post_Op1_Original_051723.jpg?w=1125&auto=compress%2Cformat&fit=crop&dm=1684439443&s=58af9d7a3debd84a717f9c2ab6b5daef)
+
+[![](https://img.shields.io/badge/Originally%20Posted%20%40-Michigan%20Labs-blue?style=for-the-badge)](http://localhost:3000/blog/The-5-Minute-Accessibility-Strategy)
+
+If you were asked right now to scope out a baseline of accessibility needs in your app, with details on how to implement them, could you articulate a plan in 5 minutes? Whether you have an already existing project, or a brand new app you're working on, accessibility can sometimes be a daunting topic. At Michigan Labs, we have [projects that specifically target users who need these features](https://www.forbes.com/sites/forbestechcouncil/2022/07/01/three-technologies-for-the-visually-impaired/?sh=1db2f82135e6) Because of this, accessibility has become more and more important to us. I wanted to share this post with you, in case you need a plan quickly, and aren't sure where to start. This won't be comprehensive, but will touch on some of the major elements in order to give you a good, technical starting point. We'll cover the following areas, which are platform agnostic, but also their React Native implementations as an example:
+
+1. Text Scale
+2. Screen Reader Text
+3. UI/UX Responsibility
+
+## Text Scale
+
+From my personal experience, the broader your user base gets, the more users you'll find that set the universal text scale feature on their phone to the absolute maximum, or anything above the default.
+
+<img
+  width="300px"
+  src="https://optimise2.assets-servd.host/gratis-creeper/production/blog/font-scale-settings.jpeg?w=1179&auto=compress%2Cformat&fit=crop&dm=1684439803&s=f18094a5e1988d2d3c2cff64c7a33293"
+/>
+
+This feature is available to help overcome low visibility across the entire OS. If
+you're not prepared for handling it, these universal settings could override your
+UI and give the user a bad experience. How can we be prepared for this?
+
+In React Native, for all `<Text>` components, we must use the following props where applicable:
+
+- [maxFontSizeMultiplier](https://reactnative.dev/docs/text#maxfontsizemultiplier)
+- [minFontSizeMultiplier](https://reactnative.dev/docs/text#minimumfontscale-ios) - iOS only
+- [allowFontScaling](https://reactnative.dev/docs/text#allowfontscaling)
+
+There are others, but these are the most basic props that have the most impact. What this is **not**, is a way to just ignore all of the font scaling accessibility settings. We don't want to do this, but instead add a buffer of space in our UI, so that the user can increase/decrease font scaling to a moderate degree without breaking the experience.
+
+After you've added these measures to control font scaling, how can we test this easily? In your simulator, you can typically just update the font scaling in the accessibility settings for the OS.
+
+<img
+  width="300px"
+  src="https://optimise2.assets-servd.host/gratis-creeper/production/blog/fontscale-slider.png?w=1179&auto=compress%2Cformat&fit=crop&dm=1684439812&s=d68a2a3eb83533692778948758f6d9c0"
+/>
+
+However, in iOS you can do this _live_ via these steps:
+
+1.  Run the app using Xcode
+2.  Locate the log bar near the bottom of the screen
+3.  Open the `Environment Overrides` window
+4.  Adjust the slider accordingly
+
+<img
+  width="300px"
+  src="https://optimise2.assets-servd.host/gratis-creeper/production/blog/accessibility_xcode.png?w=448&auto=compress%2Cformat&fit=crop&dm=1684439808&s=d5e5ebf252df1f71ed9c86c50c06b976"
+/>
+
+### Screen Reader Text
+
+Supporting a screen reader in your app has a few benefits beyond just accessibility for the visually impaired:
+
+1. It adds natural descriptions to the code in various elements of the app, which helps with onboarding or understanding the practical use-case of a component
+2. It forces us to better organize complex interactive structures, like forms or grouped controls
+
+In order to properly support screen readers, we must use the following props:
+
+- [accessible={true}](https://reactnative.dev/docs/accessibility#accessible) - This indicates that a component is an accessibility element, and its children are intended to be grouped into a **single selectable component**. Consider the following:
+
+```html
+<View accessible="{true}">
+  <Text>text one</Text>
+  <Text>text two</Text>
+</View>
+```
+
+In this case, the children are intended to be grouped together. The screen reader won't focus separately on each child.
+
+- [accessibilityLabel={"Some label"}](https://reactnative.dev/docs/accessibility#accessibilitylabel) - This is the text that will be read by the screen reader. By default, if you don't include this prop, the screen reader will instead concatenate all `<Text>` children. Consider these examples:
+
+Here, the screen reader will read "text one text two".
+
+```html
+<View accessible="{true}">
+  <Text>text one</Text>
+  <Text>text two</Text>
+</View>
+```
+
+Here, the screen reader will read "A text area".
+
+```html
+<View accessible="{true}" accessibilityLabel="A text area">
+  <Text>text one</Text>
+  <Text>text two</Text>
+</View>
+```
+
+- [accessibilityHint={"Some hint"}](https://reactnative.dev/docs/accessibility#accessibilityhint) - Hints are read by the screen reader after the label. They're intended to tell the user what the result of an action will be.
+  - On iOS, hints can be turned off in the VoiceOver settings
+  - On Android, hints cannot be turned off
+
+###### Extra Notes
+
+- Touchable components such as `TouchableOpacity` are **by default** set to `accessible={true}`
+- For a group of components, use the `accessible` prop on the parent to group the children into a single "selectable" component
+
+### UI/UX Responsibility
+
+There are many ways to implement more accessibility features in an app, such as [accessibilityIgnoresInvertColors](https://reactnative.dev/docs/accessibility#accessibilityignoresinvertcolors-ios) to help with photos when the OS color mode is inverted. However, the need for some of these must be clarified by designers, and not **assumed** as a requirement for developers.
+
+Typically, we can **assume** the following areas are already being addressed in our designs, unless there's specific concerns:
+
+- Color contrast
+- Fonts
+- Default text sizes
+- Colorblind friendly design
+
+### Conclusion
+
+If you incorporate these basic accessibility features into your app, you'll have a great foundation and baseline that covers a **large** portion of user needs. Beyond this, it will depend on your own use-cases, and how deep you need to adhere to standards like WCAG.
+
+WCAG is an accessibility standard for web content, however this doesn't translate 1:1 with mobile development. Because of this, WCAG published [guidelines to help bridge this gap](https://www.w3.org/TR/mobile-accessibility-mapping/).
