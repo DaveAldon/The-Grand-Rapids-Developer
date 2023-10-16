@@ -13,17 +13,24 @@ interface ISkillData {
 const SkillData: ISkillData[] = [
   {
     title: 'WHAT I KNOW',
-    skills: ['Typescript', 'Javascript', 'C#', 'Python', 'ObjectScript'],
+    skills: [
+      'Typescript',
+      'Javascript',
+      'C#',
+      'Python',
+      'Kotlin',
+      'ObjectScript'
+    ],
     color: SkillType.KNOWN
   },
   {
     title: `CURRENTLY LEARNING`,
-    skills: ['Kotlin'],
+    skills: ['Swift'],
     color: SkillType.LEARNING
   },
   {
     title: 'WANT TO LEARN NEXT',
-    skills: ['Swift', 'C'],
+    skills: ['C', 'C++'],
     color: SkillType.WANT_TO_LEARN
   }
 ];

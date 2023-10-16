@@ -48,11 +48,6 @@ export default function Footer() {
           <ExternalLink href="https://github.com/davealdon">
             GitHub
           </ExternalLink>
-          <Link href="/tweets">
-            <div className="text-gray-500 hover:text-gray-600 transition">
-              Tweets
-            </div>
-          </Link>
           {/* <ExternalLink href="https://www.youtube.com/channel/UCZMli3czZnd1uoc1ShTouQw">
             YouTube
           </ExternalLink> */}
