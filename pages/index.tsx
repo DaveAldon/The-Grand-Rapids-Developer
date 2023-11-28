@@ -10,7 +10,7 @@ export default function Home({ videos }) {
   return (
     <Container>
       <div className="flex flex-col justify-center items-start max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
-        <h1 className="font-bold text-3xl md:text-5xl tracking-tight mb-1 text-black dark:text-white">
+        <h1 className="font-bold text-3xl md:text-3xl tracking-tight mb-1 text-black dark:text-white">
           The Grand Rapids Developer
         </h1>
         <br />

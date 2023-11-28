@@ -16,8 +16,8 @@ const LegendContainter = (props: { children: React.ReactNode }) => {
 
 const PeriodicTable: React.FC = () => {
   return (
-    <div className="gap-4 flex flex-col justify-center items-center py-4 w-4/5 md:w-full">
-      <div className="text-white text-3xl font-medium text-center title-font">
+    <div className="gap-4 flex flex-col justify-center items-center py-4 w-4/5 md:w-full text-black dark:text-white">
+      <div className=" text-3xl font-medium text-center title-font">
         Periodic Table of Software Consulting
       </div>
       <p className="text-gray-600 dark:text-gray-400">
@@ -29,7 +29,7 @@ const PeriodicTable: React.FC = () => {
         deep-dive into each element, why it's so important, and a strategy on
         how to implement it.
       </p>
-      <div className="flex flex-row text-white italic gap-2 font-thin">
+      <div className="flex flex-row italic gap-2 font-thin">
         <LegendContainter>
           <div className="w-4 h-4 bg-amber-600 rounded-sm" />
           <div>Developer Culture</div>
@@ -43,7 +43,7 @@ const PeriodicTable: React.FC = () => {
           <div>Architecture</div>
         </LegendContainter>
       </div>
-      <div className="flex flex-row text-white italic gap-2 font-thin">
+      <div className="flex flex-row italic gap-2 font-thin rounded-lg p-2 text-white bg-gray-500 dark:bg-gray-800">
         <LegendContainter>
           <div className="not-italic">L</div>
           <div className="font-bold">Long Term</div>

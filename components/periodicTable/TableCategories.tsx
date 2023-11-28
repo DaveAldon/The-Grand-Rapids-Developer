@@ -126,7 +126,7 @@ export const TableCategory_Architecture = () => {
         />
         <TableElement
           title="Dp"
-          subtitle={'Dependencies'}
+          subtitle={'Dependency'}
           description={'When to use monorepos, libraries, & submodules'}
           longTerm
           type={Categories.Architecture}
