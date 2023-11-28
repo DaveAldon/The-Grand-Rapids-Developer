@@ -18,7 +18,8 @@ module.exports = withContentlayer({
       'is3-ssl.mzstatic.com', // Apple Images
       'is2-ssl.mzstatic.com', // Apple Images
       'is1-ssl.mzstatic.com', // Apple Images
-      'optimise2.assets-servd.host' // Optimise Images
+      'optimise2.assets-servd.host', // Optimise Images
+      'www.grandrapidsdeveloper.com' // My Images
     ]
   },
   experimental: {

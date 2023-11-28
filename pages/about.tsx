@@ -6,6 +6,7 @@ import Skills from 'components/Skills';
 import Industries from 'components/Industries';
 import BioCard from 'components/BioCard';
 import AppPortfolio from 'components/AppPortfolio';
+import PeriodicTable from 'components/periodicTable/periodicTable';
 
 export default function About() {
   return (

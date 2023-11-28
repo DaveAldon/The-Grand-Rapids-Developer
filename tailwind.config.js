@@ -96,7 +96,10 @@ module.exports = {
     }
   },
   variants: {
-    typography: ['dark']
+    typography: ['dark'],
+    extend: {
+      display: ['group-hover']
+    }
   },
   plugins: [require('@tailwindcss/typography')]
 };
