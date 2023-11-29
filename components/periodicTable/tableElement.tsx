@@ -49,7 +49,7 @@ export const TableElement = (props: {
   return (
     <div className="w-full h-52 md:w-20 md:h-24 relative group text-white">
       <ConditionalLink link={props.link}>
-        <div className="p-1 text-lg rounded-sm md:text-xs w-full h-52 md:w-20 md:h-24 absolute bg-slate-600 hidden group-hover:block ease-out hover:translate-y-0.5 transition-all">
+        <div className="p-1 text-lg rounded-sm md:text-xs w-full h-52 md:w-20 md:h-24 absolute dark:bg-gray-800 bg-gray-500 hidden group-hover:block ease-out hover:translate-y-0.5 transition-all">
           {props.description}
         </div>
         <div

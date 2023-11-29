@@ -8,7 +8,7 @@ import { ArticleAvailableIcon } from './tableElement';
 
 const LegendContainter = (props: { children: React.ReactNode }) => {
   return (
-    <div className="flex flex-row justify-center items-center gap-2">
+    <div className="flex flex-row justify-center items-baseline gap-2">
       {props.children}
     </div>
   );
