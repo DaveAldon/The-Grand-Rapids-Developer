@@ -5,7 +5,6 @@ import Container from 'components/Container';
 import GitHub from 'components/metrics/Github';
 import Unsplash from 'components/metrics/Unsplash';
 import YouTube from 'components/metrics/Youtube';
-import TopTracks from 'components/TopTracks';
 
 export default function Dashboard() {
   return (
@@ -25,10 +24,9 @@ export default function Dashboard() {
             more. Want to build your own? Check out my&nbsp;
             <Link
               href="/blog/fetching-data-with-swr"
-              className="text-gray-900 dark:text-gray-100 underline">
-              
-                blog series.
-              
+              className="text-gray-900 dark:text-gray-100 underline"
+            >
+              blog series.
             </Link>
           </p>
         </div>
@@ -40,14 +38,6 @@ export default function Dashboard() {
           <Analytics />
           <GitHub />
         </div>
-        <h2 className="font-bold text-3xl tracking-tight mb-4 mt-16 text-black dark:text-white">
-          Top Tracks
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
-          Curious what I'm currently jamming to? Here's my top tracks on Spotify
-          updated daily.
-        </p>
-        <TopTracks />
       </div>
     </Container>
   );

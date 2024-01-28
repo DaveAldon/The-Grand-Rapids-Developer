@@ -1,0 +1,67 @@
+---
+title: 'Improve Unity3D Compile Times with Assembly Definitions'
+publishedAt: '2024-01-28'
+summary: 'This post covers one way you can speed up editor compile times in Unity3D using assembly definitions.'
+image: '/static/images/assembly-definitions/assembly-definitions-banner.png'
+---
+
+![A can assembly line as the banner for this post](/static/images/assembly-definitions/assembly-definitions-banner.png)
+
+
+I'm **not** going to give a long-winded introduction with AI generated paragraphs about the history of Assembly Definitions and Unity3d. I'm just going to get straight to the point and say that I've been working with Unity3D since version 1.0 in 2005 when I used a PowerPC MacBook Pro. And after all these years I'm *still* sick of editor compile times.
+
+People have been trying to solve this problem for years, and nothing is ever perfect. Today, pick your flavor for reducing compile times (just kidding, you don't have a lot of options):
+
+1. Use hot reload plugins (won't work with generics and class changes, only good for simple variable changes, and even then may not detect all the time requiring more debugging) - This seems to be better for a project that's over halfway through development, and won't see as many structural changes. See [this case study](https://premortem.games/2023/02/24/new-tool-dramatically-improves-compiling-times-for-unity/) for an example
+2. C# Incremental C# Compiler (deprecated)
+3. 🌟 Assembly Definitions 🌟
+
+## How to do it and the results
+
+If you choose to use ASMDEFs (Assembly Definition Files), you need to be prepared to actually think about your code structure:
+
+1. ASMDEFs will force you to reconcile circular references
+2. You'll discover that a lot of your code is actually not as modular as you thought
+3. ASMDEFs are NOT the same as a C# Namespace
+	1. A namespace partitions code and helps avoid name collision
+	2. An ASMDEF is only aiding in speeding up compile time. They're like a Visual Studio project file
+4. Those 3rd party plugins you've got sitting outside the `Plugin` folder need to be dealt with
+
+Before you do anything, just imagine that Unity is basically lumping your entire project into one ASMDEF right now. Whenever any code changes, everything inside the ASMDEF has to be recompiled. This is why recompiling in the editor takes so long, no matter how small your change was. The bigger your project, the longer everything will take.
+
+Now let's introduce more ASMDEFs of our own. By default, imagine that anything in your `Plugin` folder is treated as its own ASMDEF. This is great, because that means recompiling anything in your project isn't going to trigger a plugin recompile. We get that one for free! Now let's start making an ASMDEF.
+
+![analytics-folder.png](/static/images/assembly-definitions/analytics-folder.png)
+
+First, you should already be organizing different groups of scripts into folders. In my example above, I have an `Analytics` folder that contains all my scripts that hit the Unity analytics API. Then in this folder you `Create -> Assembly Definition`. Anything inside this folder is going to be encapsulated by your new ASMDEF. 
+
+![assembly-definition.png](/static/images/assembly-definitions/assembly-definition.png)
+
+If your scripts in this folder are using any outside libraries or namespaces, you're going to start getting console errors. Also, if you have any scripts *outside* this folder that are referencing scripts *inside* this folder, you're going to start getting console errors. So give it a nice name, and lets reconcile these problems.
+
+1. Add external ASMDEFs to your `Assembly Definition References`. These can be Unity packages, or code you need to access from another folder
+2. If you're referencing code from another folder, you need to make an ASMDEF for that second folder as well before you can add it to the reference list here
+
+![unity-libs.png](/static/images/assembly-definitions/unity-libs.png)
+
+The problem with just making a bunch of ASMDEFs and cross referencing them all with each other is...that defeats the purpose. When you compile code encapsulated by an ASMDEF, **all the ASMDEFs referenced by it will also have to recompile**. So you need to start thinking carefully about how you're managing dependencies between various modules and folders, or you won't get any compile time benefit out of this.
+
+Personally, I've found it best to have some high level major structures governed by ASMDEFs, instead of basically tossing one for each individual script. The compile time saves will be less than anything noticeable if you have 1000 ASMDEFs. But having 1-10 should give you a couple seconds of compile time back, especially if your project has grown a lot and you're noticing a *lot* of compile hangups lately.
+
+## Exclude Platforms!
+
+![unity-constraints.png](/static/images/assembly-definitions/unity-constraints.png)
+
+An ASMDEF isn't limited to just segmenting what code gets compiled across the board. You can also use it to reduce compile time for specific architectures you're targeting. There are a lot of constraints you can add in the inspector which is great if you have large chunks of code that should only apply under certain conditions. When Unity compiles after a change, it's compiling for **all** architectures by default whether you want it to or not. So disable all the platforms you're never going to target for another chunk of time saved.
+
+## Conclusion - If you don't want to do all this, there's an easy way out
+
+I hope this was helpful in some way. Using ASMDEFs should reduce editor compile times by a second or two if you have a good sized project. If you're iterating through a lot of changes frequently, that amount of time definitely adds up, so anything helps.
+
+And here's another piece of advice. If you like the idea of ASMDEFs, but you just don't want to organize your code differently, you should at the very least do this to get some instant improvements:
+
+1. Make sure all your scripts and respective folders are inside a single folder, like the standard `Assets/Scripts/`
+2. Make a single ASMDEF for it, and link whatever Unity packages you need
+3. Mark all the platforms you need
+
+That should give you some instant improvements with minimal effort, and shouldn't require a codebase organization overhaul.

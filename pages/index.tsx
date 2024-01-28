@@ -46,11 +46,11 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
-            title="The 5 Minute Accessibility Strategy"
-            slug="The-5-Minute-Accessibility-Strategy"
+            title="Improve Unity3D Compile Times with Assembly Definitions"
+            slug="Improve-Unity3D-Compile-Times-with-Assembly-Definitions"
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
             imageUrl={
-              'https://optimise2.assets-servd.host/gratis-creeper/production/blog/1642672_social-graphic-for-blog-post_Op1_Original_051723.jpg?w=1125&auto=compress%2Cformat&fit=crop&dm=1684439443&s=58af9d7a3debd84a717f9c2ab6b5daef'
+              'https://www.grandrapidsdeveloper.com/static/images/assembly-definitions/assembly-definitions-banner.png'
             }
           />
           <BlogPostCard
