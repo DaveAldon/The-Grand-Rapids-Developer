@@ -46,19 +46,19 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
+            title="2 Tricks for Audio Management"
+            slug="2-Audio-Tricks-for-Unity3D"
+            gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
+            imageUrl={
+              'https://www.grandrapidsdeveloper.com/static/images/audio-tricks/audio-tricks-banner.png'
+            }
+          />
+          <BlogPostCard
             title="Improve Unity3D Compile Times with Assembly Definitions"
             slug="Improve-Unity3D-Compile-Times-with-Assembly-Definitions"
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
             imageUrl={
               'https://www.grandrapidsdeveloper.com/static/images/assembly-definitions/assembly-definitions-banner.png'
-            }
-          />
-          <BlogPostCard
-            title="The Overwhelming Power of Culture"
-            slug="The-Overwhelming-Power-of-Culture"
-            gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
-            imageUrl={
-              'https://www.grandrapidsdeveloper.com/static/images/culture-banner.png'
             }
           />
           <BlogPostCard

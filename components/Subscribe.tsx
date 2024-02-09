@@ -70,7 +70,7 @@ export default function Subscribe() {
           {form.state === Form.Loading ? <LoadingSpinner /> : 'Subscribe'}
         </button>
       </form>
-      {form.state === Form.Error ? (
+      {/* {form.state === Form.Error ? (
         <ErrorMessage>{form.message}</ErrorMessage>
       ) : form.state === Form.Success ? (
         <SuccessMessage>{form.message}</SuccessMessage>
@@ -80,7 +80,7 @@ export default function Subscribe() {
             subscriberCount !== 0 ? subscriberCount.toLocaleString() : '-'
           } subscribers`}
         </p>
-      )}
+      )} */}
     </div>
   );
 }

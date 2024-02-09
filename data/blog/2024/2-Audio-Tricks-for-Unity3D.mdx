@@ -1,0 +1,92 @@
+---
+title: '2 Tricks for Audio Management'
+publishedAt: '2024-02-09'
+summary: 'This post covers two ways to improve audio when dealing with repetitive sounds, and volume control'
+image: '/static/images/audio-tricks/audio-tricks-banner.png'
+---
+
+![A bunch of audio sources as the banner](/static/images/audio-tricks/audio-tricks-banner.png)
+
+Source code available on:
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/DaveAldon/Unity3D-Audio-Tricks)
+
+I've got two tricks for you today that help add some polish to any app or game with repetitive audio, or that needs any volume controls.
+
+1. If your game has a lot of repetitive audio, you can add a small amount of randomness to the pitch to make it sound more natural. This is **super** useful for footsteps, weapon sounds, or anything that has to play over and over.
+
+2. If your game has a volume control (it better have one!), keep in mind how volume works. It's not linear, it's logarithmic. A lot of libraries out there, and even basic implementations in Unity, will handle this, but can easily slip through the cracks.
+
+![Cube shooting a sphere](/static/images/audio-tricks/demo.gif)
+
+I've included a [Mac compatible build](https://github.com/DaveAldon/Unity3D-Audio-Tricks/releases/tag/mac-build) with a simple scene that demonstrates these two tricks and how they can impact your game. You can try it out right now without needing to install anything.
+
+### How to use the pitch trick
+
+Essentially, whenever you call your audio clip to play, include a pitch value that is slightly randomized. Here's an example in C#:
+
+```csharp
+  [SerializeField]
+  private AudioClip shootSound;
+  private AudioSource _audioSource;
+
+  IEnumerator ShootProjectile()
+  {
+    while (true)
+    {
+      GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+      projectile.GetComponent<Rigidbody>().AddForce(transform.forward * projectileSpeed);
+
+      if (shootSound != null)
+      {
+        // Random pitch value
+        _audioSource.pitch = Random.Range(0.5f, 1.2f) : 1.0f;
+        _audioSource.PlayOneShot(shootSound);
+      }
+      yield return new WaitForSeconds(shootInterval);
+    }
+  }
+```
+
+Above is with the built-in audio management in Unity. But there's other audio managers out there. One of my favorites is the [More Mountains Feels](https://feel.moremountains.com/) plugin. Pitch is just as easy to modify with this library. Here's example of setting up an options object that modifies a clip:
+
+```csharp
+  MMSoundManagerPlayOptions options;
+  options = MMSoundManagerPlayOptions.Default;
+  options.Pitch = UnityEngine.Random.Range(0.5f, 1.2f);
+  options.SpatialBlend = 1;
+  options.AttachToTransform = transform;
+  options.MmSoundManagerTrack = MMSoundManager.MMSoundManagerTracks.Other;
+```
+
+Make sure to run the Unity project in this repo and toggle the checkbox in the UI to hear the difference. Pitch makes a **huge** difference when you throw in repetition.
+
+### How to use the volume trick
+
+The volume trick depends on the audio manager you're using, and the slider values. I like to have a slider that goes from 0 to 100 with whole numbers, so I use a formula like this to convert it to whatever scale I need:
+
+```csharp
+  public void SetLinearVolume(float sliderValue)
+  {
+    float volume = sliderValue / 100f;
+    AudioListener.volume = volume;
+  }
+
+  public void SetLogarithmicVolume(float sliderValue)
+  {
+    float db = -80 + (sliderValue * 0.8f);
+    float volume = Mathf.Pow(10, db / 20);
+    AudioListener.volume = volume;
+  }
+```
+
+You could just as easily use a 0-1 scale, which is the default for Unity sliders. The important part is making sure that the **_entire volume slider is usable_**, and not just the first or last 10% of it. This is especially important for mobile games, where the user might not have super granular control over the slider.
+
+### Conclusion
+
+I hope these tricks were helpful for you! Some boilerplate stuff about the repo below:
+
+1. The project was made with Unity3D `2023.2.7f1`
+2. The UI uses TextMeshPro
+3. The audio clip is some random free laser sound I found
+4. Everything else is using built-in stuff
+5. Source code for the full project is available on [GitHub](https://github.com/DaveAldon/Unity3D-Audio-Tricks)
