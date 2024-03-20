@@ -46,6 +46,14 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
+            title="Fulfill Google Plays Data Safety Requirements in 20 Minutes"
+            slug="Fulfill-Google-Plays-Data-Safety-Requirements-in-20-Minutes"
+            gradient="from-[#D8B4FE] to-[#F86139]"
+            imageUrl={
+              'https://www.grandrapidsdeveloper.com/static/images/google-play-requirements/banner.png'
+            }
+          />
+          <BlogPostCard
             title="2 Tricks for Audio Management"
             slug="2-Audio-Tricks-for-Unity3D"
             gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
@@ -59,14 +67,6 @@ export default function Home({ videos }) {
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
             imageUrl={
               'https://www.grandrapidsdeveloper.com/static/images/assembly-definitions/assembly-definitions-banner.png'
-            }
-          />
-          <BlogPostCard
-            title="Deploying Next.js to GitHub Pages"
-            slug="Deploying-Nextjs-to-Github-Pages"
-            gradient="from-[#D8B4FE] to-[#F86139]"
-            imageUrl={
-              'https://static.wixstatic.com/media/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png/v1/fill/w_740,h_427,al_c,lg_1,q_85,enc_auto/955c63_e01b943cd5f047ac8e2d1081a129d006~mv2.png'
             }
           />
         </div>
