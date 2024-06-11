@@ -1,0 +1,85 @@
+---
+title: 'Why Network at Conferences?'
+publishedAt: '2024-06-11'
+summary: "Conferences are where you can make a choice to learn not just from the conference talks, but from the participants themselves. This post shares some things I learned from some very interesting people I met at a Conference."
+image: '/static/images/why-network-at-conferences/why-network-banner.png'
+---
+
+![](/static/images/why-network-at-conferences/why-network-banner.png)
+
+What I mean by *network* is not the potential sales angle, but a **learning** angle. In November of 2023 I went with several other colleagues from Michigan Labs to the [Do-iOS](https://do-ios.com/) Swift conference in Amsterdam. Between each of the sessions every day was a generous one hour break. This seemed odd at first because of how many breaks there ended up being, but it quickly became a blessing.
+
+If you're ever at a developer event or conference and you have some down time, how do you prefer to spend it? I have a tendency to sit by myself or stay with a group of people that I know. But if you're truly interested in learning, this is where you can make a choice to learn not just from the conference talks, but from the participants themselves. Do-iOS was filled with European software consultants and incredibly experienced developers, all working with similar tools as myself. There were a lot of iOS topics from each presentation floating in my head, and I thought talking to other people would be a great way to brainstorm or validate what I was thinking. I could also learn a couple interesting takeaways, or little nuggets of wisdom, from more senior developers.
+
+I wanted to share the nuggets of wisdom from three specific people I connected with at the conference. I'm sharing this in the hopes that you might choose to engage with participants at events, if you usually don't. You never know who you might meet.
+
+![](/static/images/why-network-at-conferences/wolfgang.jpg)
+
+The first person I wanted to talk about is [Wolfgang Lutz](https://www.linkedin.com/in/wolfgang-lutz-0a9336146/), a developer at [Number42](https://www.number42.de/), a German software consultancy. He is an incredibly funny person, and was especially enthusiastic about dependency injection with Swift. What I learned from him was how important [Dip](https://github.com/AliSoftware/Dip) is for his work, instead of [Resolver](https://github.com/hmlongco/Resolver) which we typically use. This was an interesting take because Resolver is quite lightweight and performant. But it's all a balancing act of what you don't want to spend time on, and what performance you need. Dip provides a lot of extra features that may be important to a consultant, such as circular dependency handling without lazy loading:
+
+```swift
+import Dip
+
+class ClassA {
+    var classB: ClassB?
+}
+
+class ClassB {
+    var classA: ClassA?
+}
+
+let container = DependencyContainer { container in
+    container.register { ClassA() }
+    container.register { ClassB() }
+}
+
+container.register(.eagerSingleton) { container in
+    let classA = try container.resolve() as ClassA
+    let classB = try container.resolve() as ClassB
+    classA.classB = classB
+    classB.classA = classA
+}
+```
+
+By using this approach, the circular dependency between `ClassA` and `ClassB` is resolved when the `DependencyContainer` is created, and any code that needs an instance of `ClassA` or `ClassB` can get one from the container without causing an infinite loop of dependency resolution.
+
+![](/static/images/why-network-at-conferences/marcel.jpg)
+
+[Marcel Borsten](https://www.linkedin.com/in/marcelborsten/) was the second person I met. Marcel is a managing partner of [Impart](https://www.impart.nl/), a Netherlands based software consultancy. He was incredibly articulate and understanding of the business of software development. I learned a lot about how he deals with juggling 5-6 projects at a time, and how he scales the work with contractors and other resources. He is also quite experienced with Android development, and it was interesting to be able to talk about things other than iOS at an iOS conference. 
+
+Marcel brought up dependency injection as a major topic, just like Wolfgang, but for Android instead. We use Dagger a lot, but he found [Koin](https://insert-koin.io/) to be the best tool for himself over the years due to ease of use, simplicity, and that it's very easy to read. I found it interesting how important these simple points were to him, since he's been spinning up projects for over 15 years at Impart, and his time is incredibly valuable.
+
+```kotlin
+class MyActivity : AppCompatActivity() {
+    // Lazy inject MyPresenter
+    val myPresenter: MyPresenter by inject()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Use myPresenter
+    }
+}
+```
+
+![](/static/images/why-network-at-conferences/matt.jpg)
+
+[Matt Heaney](https://www.linkedin.com/in/matt-heaney-6389ba81/) is the final person I wanted to mention. Matt is an infectiously friendly developer, and quickly got to know everyone from Michigan Labs. Matt was a senior iOS developer at [Experian](https://www.experianplc.com/) for a few years before recently starting his own consultancy business called **Hacked Reality Studio**, based in England. What I've learned from Matt is the importance of sharing. If you check out his LinkedIn profile, you'll see that he's busy sharing tips and tricks all the time, and has great metaphors to explain more complicated ideas. 
+
+My favorite tip was about *Indirect Enums and Cases*, which are for when you have a case that references an enum itself as an associated value. Because of possible recursion, you get a compiler error if you try doing this by default, as the compiler can't determine the amount of memory needed for the enum.
+
+As a solution to this problem, you can create an indirect enum case to allow an enum to have a recursive nature. This is often used for data structures like linked lists or trees:
+
+```swift
+enum BinaryTree {
+    case empty
+    indirect case node(value: Int, left: BinaryTree, right: BinaryTree)
+}
+
+let leftNode = BinaryTree.node(value: 5, left: .empty, right: .empty)
+let rightNode = BinaryTree.node(value: 15, left: .empty, right: .empty)
+let rootNode = BinaryTree.node(value: 10, left: leftNode, right: rightNode)
+```
+
+## Conclusion
+
+These are all examples of interesting things I learned outside of the conference topics themselves. I really appreciated the time we had available to *network ideas*. I hope that the next time you're at a conference or developer event and there's a break, you take the time to talk to people you've never met, you might learn about a technique people are using halfway around the world that could help you *right now*.
