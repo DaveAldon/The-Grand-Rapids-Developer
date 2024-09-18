@@ -1,0 +1,127 @@
+---
+title: 'Automatic Artifact Downloads Inside PR Comments'
+publishedAt: '2024-09-18'
+summary: "This post shows how to automate the process of commenting on a PR with a download link to the artifacts produced by a Github Action workflow."
+image: '/static/images/pr-comments/pr-comments-banner.png'
+---
+
+![banner](/static/images/pr-comments/pr-comments-banner.png)
+
+In the pursuit of perfect automation, having build artifacts from Github pipelines be available at your fingertips is an impressive quality-of-life improvement for developers. If you've used Github Actions, you know that build artifacts are easily accessible to download after drilling down into an individual workflow run. But when you're reviewing code in a PR, this requires three clicks from a code review going to Actions -> Build -> Download Artifact:
+
+![actions](/static/images/pr-comments/1.png)
+
+I've always wanted to get this click count down to one, and in this post, I'll show you how I did it.
+
+After setting up this Github Action, you'll have a fully automated comment on your PR with a download link to all of the individual artifacts produced by the workflow!
+
+![comment](/static/images/pr-comments/2.png)
+
+## When This Really Shines
+
+Some people believe that going from three clicks to one isn't justifiable for the effort required. But really, any automation task is looking at the long-run. If you're only dealing with a single artifact, then sure, it may not be necessary. But on projects where you need multiple artifacts produced, and multiple actions running them, this consolidates your artifacts into a single PR comment.
+
+For example, with React Native projects, in a production environment we're dealing with at least four artifacts:
+
+1. Simulator `.app` build for iOS
+2. Distribution `.ipa` build for iOS
+3. Testing `.apk` build for Android
+4. Distribution `.aab` build for Android
+
+In my case, I use in-house runners to kick off iOS builds, and Github cloud runners for Android. These can both run in parallel, but the artifacts end up in different runs. Instead, through automation, we can get all of these artifacts into a single PR comment that self-updates with the asynchronous workflow runs.
+
+You can see an example of this in action in [this PR](https://github.com/DaveAldon/PR-Artifact-Comments/pull/2).
+
+## How it works
+
+You may be thinking that you could just use an existing action from the Github marketplace to do this. And there are some that work in a very opinionated way, but when you add the requirement of private repos, enterprise repos, 100% free, and 100% customizable output, the options start fading away. I've wanted something easy, free, and under my control. So starting with those requirements, let's begin by inspecting what an artifact really is. All we need is a link to the artifact, so let's take a look at one:
+
+`https://github.com/DaveAldon/PR-Artifact-Comments/actions/runs/9454394757/artifacts/1586896203`
+
+This link is broken down into three parts:
+
+1. The repo reference: `DaveAldon/PR-Artifact-Comments`
+2. The workflow run ID: `9454394757`
+3. The artifact ID: `1586896203`
+
+Sounds easy enough, right? The repo reference and workflow run id is actually really easy to get during a given action run, and are available through the Github [context API](https://docs.github.com/en/actions/learn-github-actions/contexts). For example, run id can be retrieved at any point like this:
+
+```yaml
+steps:
+  - name: Print Workflow Run ID
+    run: echo "The workflow run ID is ${{ github.run_id }}"
+```
+
+But notice in the docs that getting any artifact ids is missing? You can actually retrieve them via the [REST API](https://docs.github.com/en/rest/actions/artifacts?apiVersion=2022-11-28), but the artifact link only lasts one minute and only works after the run has finished. It's not possible using this method to pull the artifact ID during the run itself. Also, I'm expecting to kick off my runs and come back a while later hoping to download whatever I want, whenever I want. Not within one minute.
+
+So what I've done is use the Github API to its fullest, and inject code into the action process in order to get the id. Here's how to do it:
+
+1. When you upload your artifact, bind it to an id:
+
+```yaml
+- name: Upload Artifact
+        uses: actions/upload-artifact@v4.3.3
+        id: sample-artifact
+        with:
+          name: sample-artifact
+          if-no-files-found: error
+          retention-days: 14
+          path: ${{ github.workspace }}/sample.txt
+```
+
+2. Use the `id` field to assign the artifact id to a temporary environment variable:
+
+```yaml
+- name: Output artifact ID
+  run: echo "SAMPLE_ARTIFACT_ID=${{ steps.sample-artifact.outputs.artifact-id }}" >> $GITHUB_ENV
+```
+
+3. Reference the environment variable inside a script job to build the link and initiate the PR comment:
+
+```yaml
+- name: Comment PR
+  uses: actions/github-script@v7.0.1
+  if: success()
+  with:
+    github-token: ${{secrets.GITHUB_TOKEN}}
+    script: |
+      const sample_artifact_id = process.env.SAMPLE_ARTIFACT_ID;
+
+      const issue_number = context.issue.number;
+      const run_id = context.runId;
+      const repo = context.repo;
+
+      // Merges to main branch do not have an associated issue number
+      if(!issue_number) {
+        return;
+      }
+
+      const development_link = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}/artifacts/${sample_artifact_id}`
+
+      const comment = `
+        ## ✅ Build Artifacts 😍
+
+        | Build Name | Download Link |
+        | --- | --- |
+        | 🌎 Artifact Download | [Download](${development_link}) |
+      `;
+
+      // Create a new comment
+      await github.rest.issues.createComment({
+        owner: repo.owner,
+        repo: repo.repo,
+        issue_number: issue_number,
+        body: comment
+      });
+```
+
+And voila! Whenever you make a PR, the action will run, upload the artifact, and comment on the PR with a download link to the artifact. Another added bonus is that when an action comments on your PR, you'll get an email with the contents, meaning that you can download your artifacts from emails too!
+
+![email](/static/images/pr-comments/3.png)
+
+You can take a look at the original codebase for this post in [this repo](https://github.com/DaveAldon/PR-Artifact-Comments) which has even more automation in the build script that handles:
+
+1. Creating a comment template with "in progress" statuses for other asynchronous actions
+2. Searches for a bot comment and replaces it with the new download link, guaranteeing only one bot comment per PR
+
+This topic has been incredibly helpful for me to understand how Github's Action API works, and to find out what's really possible with PR automation.

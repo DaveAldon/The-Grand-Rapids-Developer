@@ -46,6 +46,14 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
+            title="Automatic Artifact Downloads Inside PR Comments"
+            slug="Automatic-Artifact-Downloads-Inside-PR-Comments"
+            gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
+            imageUrl={
+              'https://www.grandrapidsdeveloper.com/static/images/pr-comments/pr-comments-banner.png'
+            }
+          />
+          <BlogPostCard
             title="Why Network at Conferences?"
             slug="Why-Network-at-Conferences"
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
@@ -59,14 +67,6 @@ export default function Home({ videos }) {
             gradient="from-[#D8B4FE] to-[#F86139]"
             imageUrl={
               'https://www.grandrapidsdeveloper.com/static/images/google-play-requirements/banner.png'
-            }
-          />
-          <BlogPostCard
-            title="2 Tricks for Audio Management"
-            slug="2-Audio-Tricks-for-Unity3D"
-            gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
-            imageUrl={
-              'https://www.grandrapidsdeveloper.com/static/images/audio-tricks/audio-tricks-banner.png'
             }
           />
         </div>
