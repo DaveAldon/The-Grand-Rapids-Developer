@@ -1,4 +1,5 @@
 import {
+  BotIcon,
   CarIcon,
   GraduationCap,
   HeartPulseIcon,
@@ -13,6 +14,10 @@ interface IIndustryData {
   icon: JSX.Element;
 }
 const IndustryData: IIndustryData[] = [
+  {
+    title: 'Machine Learning & AI - 1 Year',
+    icon: <BotIcon />
+  },
   {
     title: 'Healthcare - 3 Years',
     icon: <HeartPulseIcon />
