@@ -56,7 +56,7 @@ module.exports = withContentlayer({
 const ContentSecurityPolicy = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' *.youtube.com *.twitter.com vercel.live;
-    child-src *.youtube.com *.google.com *.twitter.com;
+    child-src *.youtube.com *.google.com *.twitter.com vercel.live;
     style-src 'self' 'unsafe-inline' *.googleapis.com;
     img-src * blob: data:;
     media-src 'none';
