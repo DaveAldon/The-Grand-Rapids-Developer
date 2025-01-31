@@ -46,6 +46,12 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
+            title="Distributed Machine Learning Fundamentals: Intro"
+            slug="Distributed-Machine-Learning-Fundamentals"
+            gradient="from-[#D8B4FE] to-[#F86139]"
+            imageUrl={'/static/images/ml-fundamentals/banner-1.jpg'}
+          />
+          <BlogPostCard
             title="Automatic Artifact Downloads Inside PR Comments"
             slug="Automatic-Artifact-Downloads-Inside-PR-Comments"
             gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
@@ -59,14 +65,6 @@ export default function Home({ videos }) {
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
             imageUrl={
               'https://www.grandrapidsdeveloper.com/static/images/why-network-at-conferences/why-network-banner.png'
-            }
-          />
-          <BlogPostCard
-            title="Fulfill Google Plays Data Safety Requirements in 20 Minutes"
-            slug="Fulfill-Google-Plays-Data-Safety-Requirements-in-20-Minutes"
-            gradient="from-[#D8B4FE] to-[#F86139]"
-            imageUrl={
-              'https://www.grandrapidsdeveloper.com/static/images/google-play-requirements/banner.png'
             }
           />
         </div>
