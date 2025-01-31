@@ -49,10 +49,6 @@
     {
       "source": "/live",
       "destination": "https://www.youtube.com/channel/<channel>/live"
-    },
-    {
-      "source": "/newsletter/(.*)",
-      "destination": "/newsletter"
     }
   ]
 }

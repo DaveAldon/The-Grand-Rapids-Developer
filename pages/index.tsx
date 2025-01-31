@@ -10,8 +10,8 @@ export default function Home({ videos }) {
   return (
     <Container>
       <div className="flex flex-col justify-center items-start max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
-        <h1 className="font-bold text-3xl md:text-3xl tracking-tight mb-1 text-black dark:text-white">
-          The Grand Rapids Developer
+        <h1 className="font-bold text-3xl md:text-7xl tracking-tight mb-1 text-black dark:text-white">
+          Grand Rapids Developer
         </h1>
         <br />
         <br />
@@ -92,7 +92,7 @@ export default function Home({ videos }) {
         <div className="flex justify-center">
           <PeriodicTable />
         </div>
-        <Subscribe />
+        {/* <Subscribe /> */}
       </div>
     </Container>
   );
