@@ -46,6 +46,12 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
+            title="Distributed Machine Learning Fundamentals: MLX"
+            slug="Distributed-Machine-Learning-Fundamentals-2"
+            gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
+            imageUrl={'/static/images/ml-fundamentals/banner-2.jpg'}
+          />
+          <BlogPostCard
             title="Distributed Machine Learning Fundamentals: Intro"
             slug="Distributed-Machine-Learning-Fundamentals"
             gradient="from-[#D8B4FE] to-[#F86139]"
@@ -57,14 +63,6 @@ export default function Home({ videos }) {
             gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
             imageUrl={
               'https://www.grandrapidsdeveloper.com/static/images/pr-comments/pr-comments-banner.png'
-            }
-          />
-          <BlogPostCard
-            title="Why Network at Conferences?"
-            slug="Why-Network-at-Conferences"
-            gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
-            imageUrl={
-              'https://www.grandrapidsdeveloper.com/static/images/why-network-at-conferences/why-network-banner.png'
             }
           />
         </div>
