@@ -53,7 +53,7 @@ export default function Blog({
             />
           </svg>
         </div>
-        {!searchValue && (
+        {/* {!searchValue && (
           <>
             <h3 className="mt-8 mb-4 text-2xl font-bold tracking-tight text-black dark:text-white">
               Most Popular
@@ -77,7 +77,7 @@ export default function Blog({
               image="https://static.wixstatic.com/media/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png/v1/fill/w_740,h_483,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/e862a1_f48ebd91db9942e0bee9aa26e271dd3a~mv2.png"
             />
           </>
-        )}
+        )} */}
         <h3 className="mt-8 mb-4 text-2xl font-bold tracking-tight text-black dark:text-white">
           All Posts
         </h3>

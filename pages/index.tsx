@@ -46,24 +46,22 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
+            title="Distributed Machine Learning Fundamentals: Dataset Preparation"
+            slug="Distributed-Machine-Learning-Fundamentals-3"
+            gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
+            imageUrl={'/static/images/ml-fundamentals/banner-3.jpg'}
+          />
+          <BlogPostCard
             title="Distributed Machine Learning Fundamentals: MLX"
             slug="Distributed-Machine-Learning-Fundamentals-2"
-            gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
+            gradient="from-[#D8B4FE] to-[#F86139]"
             imageUrl={'/static/images/ml-fundamentals/banner-2.jpg'}
           />
           <BlogPostCard
             title="Distributed Machine Learning Fundamentals: Intro"
             slug="Distributed-Machine-Learning-Fundamentals"
-            gradient="from-[#D8B4FE] to-[#F86139]"
-            imageUrl={'/static/images/ml-fundamentals/banner-1.jpg'}
-          />
-          <BlogPostCard
-            title="Automatic Artifact Downloads Inside PR Comments"
-            slug="Automatic-Artifact-Downloads-Inside-PR-Comments"
             gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
-            imageUrl={
-              'https://www.grandrapidsdeveloper.com/static/images/pr-comments/pr-comments-banner.png'
-            }
+            imageUrl={'/static/images/ml-fundamentals/banner-1.jpg'}
           />
         </div>
         <Link
