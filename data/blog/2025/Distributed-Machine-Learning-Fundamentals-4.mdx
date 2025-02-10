@@ -1,0 +1,153 @@
+---
+title: 'Distributed Machine Learning Fundamentals: MPI'
+publishedAt: '2025-02-10'
+summary: "In this post, we will be discussing how to use MPI to synchronize multiple computers."
+image: '/static/images/ml-fundamentals/banner-4.jpg'
+---
+
+![](/static/images/ml-fundamentals/banner-4.jpg)
+
+This post is part 4 of my Distributed Machine Learning series, you can go back to any of the posts that are published below:
+
+1. [**Introduction**](https://www.grandrapidsdeveloper.com/blog/Distributed-Machine-Learning-Fundamentals)
+2. [**Preparing a Model with MLX**](https://www.grandrapidsdeveloper.com/blog/Distributed-Machine-Learning-Fundamentals-2)
+3. [**Dataset Preparation**](https://www.grandrapidsdeveloper.com/blog/Distributed-Machine-Learning-Fundamentals-3)
+4. **How to setup MPI** (👈 this post)
+5. **Distributed Fine Tuning**
+6. **Next Steps**
+
+By now we know how to setup our model, prepare our dataset, and even start a simple fine tuning process. But if we ran all of this on two computers, we would have two separate processes and the output would be different. In this post, we will be discussing how to use MPI to synchronize multiple computers so that the following can happen:
+
+- All computers are connected together
+- All computers begin the training process at the same time
+- MLX can share gradients across the MPI "world"
+
+## What is MPI?
+
+MPI stands for Message Passing Interface. It is a standard that defines how multiple processes can communicate with each other.
+
+It is commonly used in High Performance Computing (HPC) to synchronize multiple computers, and also to run processes on a GPU in parallel on the same computer. MPI can do a lot of interesting synchronizing tasks in the computing world. In our case, we only need MPI in order to share gradients so that we can average them and benefit from the increased computing power of multiple machines. So the multi computer synchronization feature is what we'll explore.
+
+## Requirements
+
+Let's assume a two computer setup to keep things simple (host and client).
+
+- Install [Open MPI](https://www.open-mpi.org/) on each computer: `brew install open-mpi`
+- Setup passwordless SSH between the host and client. This is because MPI needs to be able to invoke commands on the client machine directly:
+  - On the client machine run: `ssh-keygen -t rsa` and follow the prompts. For simplicity, you can just press enter for all of them which will default to no password
+  - Copy the public key outputted to the host machine: `ssh-copy-id -i <path_to_rsa.pub_file> user@host`, where `user` and `host` is the username and IP address of the host machine
+  - Verify it worked by connecting to the client machine from the host without needing to enter a password: `ssh user@host`
+
+## Running MPI
+
+MPI needs a host file in order to know about all of the computers in our distributed setup, and their (ideally private) IP addresses. In the root of your project, create a file called `hostfile` (you can call it whatever you want, even without an extension), and add your information like below:
+
+```text
+10.0.0.2 slots=1
+10.0.0.3 slots=1
+```
+
+The slots parameter is for MPI to know how many processes to run on each machine. In this case, we are running one process on each machine. You can disable a client machine by changing the slots parameter to 0.
+
+> You may find documentation that says that you can use hostnames instead of IP addresses. From my attempts, I've never gotten that to work and have always had to use IP addresses.
+
+You might be wondering why we're just using the network to do this instead of a thunderbolt cable like I mentioned in our intro. And we'll get to that, but first we want to make sure the simpler setup is working.
+
+## Trying it out
+
+To test that our setup is working, run this command on the host machine:
+
+```bash
+mpirun --hostfile hostfile -np 2 hostname
+```
+
+- The `-np` parameter is the number of processes to run. This needs to match the number of available slots in the hostfile. For example, if your hostfile is setup like earlier, but `-np` is set to 3, you'll get an error
+- The final argument is the direct command to run on each machine. In this case, we're just running `hostname` to print out the name of the machine
+
+If this works, you'll get something like this outputted:
+
+```bash
+m1-pro-mini.local
+m1-max-mini.local
+```
+
+Expect this command to resolve quickly. If it hangs, then there's a couple things you can do to diagnose the issue:
+- Check that the hostfile is correct
+- Check that the host and client machines can communicate with each other by pinging each other's IP addresses
+- Check that the client machine can be accessed via SSH without a password on the host machine
+- Check that MPI is installed correctly on each machine by running this command separately on each machine: `mpirun -np 1 hostname` (this runs a single process directly on the machine without needing to resolve hosts)
+
+## Trying more complicated commands
+
+If the above all works, then you're ready to move on. With MPI, we can define any command that gets run on both machines. So, how do we run something with python? We have to be able to run our scripts with this in mind:
+
+- We need to reference the right directories
+- We need to use our virtual environment
+- We need to be able to pass arbitrary arguments to our script
+
+We can accomplish this with bash strings and relative paths that are the same on both machines:
+
+```bash
+mpirun --hostfile hostfile -np 2 bash -c '$HOME/Desktop/Fine-Tuning-Project/MLX-env/bin/python $HOME/Desktop/Fine-Tuning-Project/script.py'
+```
+
+This command invokes python directly from the virtual environment on each machine, and let's us pass whatever arguments we want inside the bash string. Try running one of your python scripts with this method before moving on.
+
+## Thunderbolt
+
+Previously, we were running MPI over the default network interface. Now, we need to get MPI working over Thunderbolt, which takes a slight change in commands. Follow these steps:
+
+- Connect the two computers with a Thunderbolt cable
+- Under `Settings > Network > Thunderbolt` make sure that each computer is connected and assigned an IP address (ideally on the `bridge0` interface)
+- I recommend setting the IP addresses manually if they're not, to something easy to remember
+- Ping each computer using their Thunderbolt IP addresses to make sure they can communicate. Another cool way to try this is by using the `Screen Sharing` app, which will be really fast over a Thunderbolt connection
+- Update your `hostfile` to use the new sets of Thunderbolt IP addresses
+
+Next, we have to change our MPI command to include some additional parameters:
+
+```bash
+mpirun --hostfile hostfile -np 2 \
+  --mca oob_tcp_if_include bridge0 \
+  --mca btl_tcp_if_include bridge0 \
+  bash -c '$HOME/Desktop/Fine-Tuning-Project/MLX-env/bin/python $HOME/Desktop/Fine-Tuning-Project/script.py'
+```
+
+> **oob_tcp_if_include** is used to specify which network interfaces should be used for out-of-band (OOB) communication. MPI defaults to the normal `eth0` if this isn't set, so we bind it to `bridge0` to use Thunderbolt
+
+> **btl_tcp_if_include** specifies which network interfaces should be used for the byte transport layer (BTL), which is responsible for actual MPI message passing over TCP. We have to bind this as well from the default `eth0` to `bridge0`
+
+If your Thunderbolt interface isn't bound to `bridge0`, you can find what it's called by running this command:
+
+```bash
+ifconfig
+```
+
+Then, look through the output to find the IP address you assigned it to, and if it's active (here's an example of `bridge0` if it's not set):
+
+```bash
+bridge0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	options=63<RXCSUM,TXCSUM,TSO4,TSO6>
+	ether 36:60:64:32:40:00 
+	Configuration:
+		id 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0
+		maxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200
+		root id 0:0:0:0:0:0 priority 0 ifcost 0 port 0
+		ipfilter disabled flags 0x0
+	member: en2 flags=3<LEARNING,DISCOVER>
+    ifmaxaddr 0 port 9 priority 0 path cost 0
+	member: en3 flags=3<LEARNING,DISCOVER>
+    ifmaxaddr 0 port 10 priority 0 path cost 0
+	nd6 options=201<PERFORMNUD,DAD>
+	media: <unknown type>
+	status: inactive
+```
+
+## What's Next
+
+If running MPI commands over Thunderbolt is working for you, then you're ready for the next post in this series coming up, which will combine every concept we've learned to finally fine tune our model across multiple computers, and average the gradients over MPI.
+
+## Further Reading
+
+- If you want to start reading more documentation on your own with what you can do with MPI and MLX, they have this documented [here](https://ml-explore.github.io/mlx/build/html/usage/distributed.html)
+- You can also read about how PyTorch uses MPI for distributed work as well [here](https://pytorch.org/tutorials/intermediate/dist_tuto.html)
+- MPI isn't just for synchronizing computers, but processes and GPUs. NVIDIA uses MPI to solve a lot of problems with CUDA [here](https://developer.nvidia.com/mpi-solutions-gpus)
