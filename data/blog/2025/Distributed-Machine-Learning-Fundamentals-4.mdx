@@ -13,7 +13,7 @@ This post is part 4 of my Distributed Machine Learning series, you can go back t
 2. [**Preparing a Model with MLX**](https://www.grandrapidsdeveloper.com/blog/Distributed-Machine-Learning-Fundamentals-2)
 3. [**Dataset Preparation**](https://www.grandrapidsdeveloper.com/blog/Distributed-Machine-Learning-Fundamentals-3)
 4. **How to setup MPI** (👈 this post)
-5. **Distributed Fine Tuning**
+5. [**Distributed Fine Tuning**](https://www.grandrapidsdeveloper.com/blog/Distributed-Machine-Learning-Fundamentals-5)
 6. **Next Steps**
 
 By now we know how to setup our model, prepare our dataset, and even start a simple fine tuning process. But if we ran all of this on two computers, we would have two separate processes and the output would be different. In this post, we will be discussing how to use MPI to synchronize multiple computers so that the following can happen:
@@ -145,6 +145,8 @@ bridge0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
 ## What's Next
 
 If running MPI commands over Thunderbolt is working for you, then you're ready for the next post in this series coming up, which will combine every concept we've learned to finally fine tune our model across multiple computers, and average the gradients over MPI.
+
+Part 5 - [**Distributed Fine Tuning**](https://www.grandrapidsdeveloper.com/blog/Distributed-Machine-Learning-Fundamentals-5)
 
 ## Further Reading
 
