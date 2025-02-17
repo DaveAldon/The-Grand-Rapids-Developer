@@ -49,7 +49,7 @@ export default function Home({ videos }) {
             title="Distributed Machine Learning Fundamentals: Next Steps"
             slug="Distributed-Machine-Learning-Fundamentals-6"
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
-            imageUrl={'/static/images/ml-fundamentals/banner-6.jpg'}
+            imageUrl={'/static/images/ml-fundamentals/banner-6.png'}
           />
           <BlogPostCard
             title="Distributed Machine Learning Fundamentals: Fine Tuning"
