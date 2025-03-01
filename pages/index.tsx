@@ -46,6 +46,12 @@ export default function Home({ videos }) {
         </h3>
         <div className="flex gap-6 flex-col md:flex-row">
           <BlogPostCard
+            title="Design Patterns in React"
+            slug="Design-Patterns-in-React"
+            gradient="from-[#D8B4FE] to-[#F86139]"
+            imageUrl={'/static/images/design-patterns-banner.png'}
+          />
+          <BlogPostCard
             title="How to: Machine Learning in the 1980s"
             slug="How-to-machine-learning-in-the-1980s"
             gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
@@ -56,12 +62,6 @@ export default function Home({ videos }) {
             slug="Distributed-Machine-Learning-Fundamentals-6"
             gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
             imageUrl={'/static/images/ml-fundamentals/banner-6.png'}
-          />
-          <BlogPostCard
-            title="Distributed Machine Learning Fundamentals: Fine Tuning"
-            slug="Distributed-Machine-Learning-Fundamentals-5"
-            gradient="from-[#D8B4FE] to-[#F86139]"
-            imageUrl={'/static/images/ml-fundamentals/banner-5.jpg'}
           />
         </div>
         <Link

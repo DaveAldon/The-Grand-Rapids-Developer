@@ -103,6 +103,17 @@ export default function AppPortfolio() {
           </h1>
         </div>
         <LeftImageItem
+          title={'Mute My Browser'}
+          photoSrc={
+            'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b3/ab/90/b3ab90b1-be58-2e02-6c23-e13e7eabde83/AppIcon-0-0-1x_U007epad-0-1-85-220.png/217x0w.webp'
+          }
+          description={
+            'This is an iOS Safari Extension app I created over a weekend. It combines Swift and Javascript to mute all audio and video sources the extension can find on a webpage.'
+          }
+          iosLink={'https://apps.apple.com/us/app/mute-my-browser/id6742364492'}
+          androidLink={null}
+        />
+        <LeftImageItem
           title={'Core Values Exercise'}
           photoSrc={
             'https://is2-ssl.mzstatic.com/image/thumb/Purple116/v4/d5/82/dc/d582dc8d-f96e-4863-8f14-874eba44f3d4/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/460x0w.webp'

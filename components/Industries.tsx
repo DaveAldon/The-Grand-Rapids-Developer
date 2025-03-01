@@ -1,11 +1,11 @@
 import {
   BotIcon,
   CarIcon,
+  Database,
   GraduationCap,
   HeartPulseIcon,
   PlaneIcon,
   TruckIcon,
-  Waypoints,
   WaypointsIcon
 } from 'lucide-react';
 
@@ -17,6 +17,10 @@ const IndustryData: IIndustryData[] = [
   {
     title: 'Machine Learning & AI - 1 Year',
     icon: <BotIcon />
+  },
+  {
+    title: 'Big Data - 1 Year',
+    icon: <Database />
   },
   {
     title: 'Healthcare - 3 Years',

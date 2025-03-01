@@ -1,0 +1,624 @@
+---
+title: 'Design Patterns in React'
+publishedAt: '2025-03-01'
+summary: "How to implement the Singleton, Factory Method, Observer, Strategy, Adapter, Decorator, Command, and Composite design patterns in React."
+image: '/static/images/design-patterns-banner.png'
+---
+
+![](/static/images/design-patterns-banner.png)
+
+It's the first day of March in 2025, and we're all dying to know more about design patterns! Typically when you read about React specific design patterns, they cover things specific to the React framework, like these concepts:
+
+- Container and Presentational Components
+- Hook component composition
+- Reducer state management
+- Higher Order Components
+- The list goes on...
+
+But what I wanted to share, is not React specific patterns, but the major patterns found in all programming, and how they can show up without realizing it *in React*.
+
+We're going to cover these major design patterns in a simple and succinct way, with some relatable code snippets as examples:
+
+- [Singleton](#singleton)
+- [Factory Method](#factory-method)
+- [Observer](#observer)
+- [Strategy](#strategy)
+- [Adapter](#adapter)
+- [Decorator](#decorator)
+- [Command](#command)
+- [Composite](#composite)
+
+> You can click on each one to jump to that section.
+
+## Singleton
+
+The Singleton pattern ensures that a class or module has only one instance. In React, one common scenario is having a single global state manager or a single configuration object.
+
+Below is a singleton theme settings object that is only instantiated once:
+
+```tsx
+let instance: Settings | null = null;
+
+class Settings {
+  theme: string;
+  language: string;
+
+  constructor() {
+    if (!instance) {
+      this.theme = "dark";
+      this.language = "en";
+      instance = this;
+    }
+    return instance;
+  }
+
+  setTheme(theme: string) {
+    this.theme = theme;
+  }
+
+  getTheme() {
+    return this.theme;
+  }
+}
+
+// Export a single instance
+const singletonSettings = new Settings();
+export default singletonSettings;
+```
+
+And this would be the implementation:
+
+```tsx
+import React from "react";
+import settings from "./singleton";
+
+export default function App() {
+  settings.setTheme("light");
+
+  return (
+    <div>
+      <h1>Current Theme: {settings.getTheme()}</h1>
+    </div>
+  );
+}
+```
+
+This isn't how you would actually manage themes in a stateful React component, but it's a simple example of guaranteeing a single instance of a class anywhere in your project.
+
+> Global state management is actually where you'll see this pattern used the most, like with Redux or the Context API. This is because global state needs to be accessed and modified from anywhere in the application, and the whole concept fails if there are multiple instances of the state.
+
+## Factory Method
+
+The Factory Method pattern provides a way to create objects (or components) without specifying the exact class (or component) of the object that will be created. In React, you'll typically use factory methods to return different UI components based on some condition. This is a very common pattern in React.
+
+Here's an example of a button factory that returns different styled buttons based on a type argument:
+
+```tsx
+import React from "react";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+
+const PrimaryButton: React.FC<ButtonProps> = (props) => {
+  return <button style={{ background: "blue", color: "#ffffff" }} {...props} />;
+};
+
+const SecondaryButton: React.FC<ButtonProps> = (props) => {
+  return <button style={{ background: "#cccccc", color: "#000000" }} {...props} />;
+};
+
+export const createButton = (type: "primary" | "secondary" | "default", props: ButtonProps) => {
+  switch (type) {
+    case "primary":
+      return <PrimaryButton {...props} />;
+    case "secondary":
+      return <SecondaryButton {...props} />;
+    default:
+      return <button {...props} />;
+  }
+};
+```
+
+And the implementation:
+
+```tsx
+import React from "react";
+import { createButton } from "./buttonFactory";
+
+export default function App() {
+  return (
+    <div>
+      {createButton("primary", { children: "Primary Btn" })}
+      {createButton("secondary", { children: "Secondary Btn" })}
+      {createButton("unknown", { children: "Default Btn" })}
+    </div>
+  );
+}
+```
+
+## Observer
+
+The Observer pattern lets you subscribe to and unsubscribe from events, then get notified whenever something changes.
+
+In React, you'll see this pattern used heavily with `useEffect` dependencies. When a dependency changes, the effect is triggered. This is the observer pattern in action.
+
+```tsx
+import React, { useState, useEffect } from "react";
+
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("Count changed to", count);
+  }, [count]);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+This is only half of the Observer pattern, as it's only subscribing to changes. A full implementation would include a way to unsubscribe from the event as well. We can see this more advanced implementation like so:
+
+First, we set up our event emitter class:
+
+```tsx
+type EventCallback = (data: any) => void;
+
+class EventEmitter {
+  private events: { [key: string]: EventCallback[] } = {};
+
+  subscribe = (eventName: string, callback: EventCallback) => {
+    if (!this.events[eventName]) {
+      this.events[eventName] = [];
+    }
+    this.events[eventName].push(callback);
+  };
+
+  unsubscribe = (eventName: string, callback: EventCallback) => {
+    this.events[eventName] = (this.events[eventName] || []).filter(
+      (cb) => cb !== callback
+    );
+  };
+
+  emit = (eventName: string, data: any) => {
+    (this.events[eventName] || []).forEach((cb) => cb(data));
+  };
+}
+
+const eventEmitter = new EventEmitter();
+export default eventEmitter;
+```
+
+Then, we can implement the publisher event in a component:
+
+```tsx
+import React, { useState } from "react";
+import eventEmitter from "./eventEmitter";
+
+export const Publisher: React.FC = () => {
+  const [text, setText] = useState("");
+
+  const handlePublish = () => {
+    eventEmitter.emit("message", text);
+  };
+
+  return (
+    <div>
+      <input value={text} onChange={(e) => setText(e.target.value)} />
+      <button onClick={handlePublish}>Publish</button>
+    </div>
+  );
+};
+```
+
+Finally, we implement the subscriber and unsubscriber event in another component:
+
+```tsx
+import React, { useEffect, useState } from "react";
+import eventEmitter from "./eventEmitter";
+
+export const Subscriber: React.FC = () => {
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const handleMessage = (data: any) => setMessage(data);
+    eventEmitter.subscribe("message", handleMessage);
+    return () => {
+      eventEmitter.unsubscribe("message", handleMessage);
+    };
+  }, []);
+
+  return <div>Received: {message}</div>;
+};
+```
+
+## Strategy
+
+The Strategy pattern allows you to switch between different algorithms or behaviors at runtime. In React, this can be illustrated by passing different “strategies” (functions or objects) to a component to handle logic differently. This is a common pattern in React when you need to switch between different behaviors.
+
+In this example, we make a text transformation component that uses different "strategies" to transform text:
+
+```tsx
+export const uppercaseStrategy = (text) => text.toUpperCase();
+export const lowercaseStrategy = (text) => text.toLowerCase();
+export const camelCaseStrategy = (text) =>
+  text.replace(/\s+(\w)/g, (_, c) => c.toUpperCase());
+```
+
+We could then have a text component that renders the information:
+
+```tsx
+import React from "react";
+
+interface TextTransformerProps {
+  text: string;
+  transformStrategy: (text: string) => string;
+}
+
+export const TextTransformer: React.FC<TextTransformerProps> = ({ text, transformStrategy }) => {
+  const transformed = transformStrategy(text);
+  return <div>{transformed}</div>;
+};
+```
+
+And the implementation:
+
+```tsx
+import React from "react";
+import { TextTransformer } from "./TextTransformer";
+import {
+  uppercaseStrategy,
+  lowercaseStrategy,
+  camelCaseStrategy,
+} from "./strategies";
+
+export default function App() {
+  return (
+    <div>
+      <TextTransformer text="Hello World" transformStrategy={uppercaseStrategy} />
+      <TextTransformer text="Hello World" transformStrategy={lowercaseStrategy} />
+      <TextTransformer text="Hello World" transformStrategy={camelCaseStrategy} />
+    </div>
+  );
+}
+```
+
+> The key here is that the component receives a strategy function and delegates the transformation logic to it.
+
+## Adapter
+
+The Adapter pattern is used to make two incompatible interfaces work together. In React, this can happen when you have a component that needs to interface with a library that has a different API than you want to expose.
+
+For example, say we have a 3rd party library that expects row data with `id`, `label`, and `value` properties:
+
+```tsx
+import React from "react";
+
+interface Row {
+  id: number;
+  label: string;
+  value: string | number;
+}
+
+interface ThirdPartyChartLibraryProps {
+  rows: Row[];
+}
+
+export const ThirdPartyChartLibrary: React.FC<ThirdPartyChartLibraryProps> = ({ rows }) => {
+  return (
+    <div>
+      <h3>Third Party Chart</h3>
+      <ul>
+        {rows.map((r) => (
+          <li key={r.id}>{`${r.label}: ${r.value}`}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+We make an adapter that converts our data `label` and `amount` to the expected `id`, `label`, and `value`, which the 3rd party library expects:
+
+```tsx
+import React from "react";
+import { ThirdPartyChartLibrary } from "./thirdPartyChart";
+
+interface DataItem {
+  label: string;
+  amount: number;
+}
+
+interface ChartAdapterProps {
+  data: DataItem[];
+}
+
+const adaptDataToRows = (data: DataItem[]) => {
+  // Convert { label, amount } to { id, label, value } expected by ThirdPartyChartLibrary
+  return data.map((item, index) => ({
+    id: index,
+    label: item.label,
+    value: item.amount,
+  }));
+};
+
+export const ChartAdapter: React.FC<ChartAdapterProps> = ({ data }) => {
+  const rows = adaptDataToRows(data);
+  return <ThirdPartyChartLibrary rows={rows} />;
+};
+```
+
+Finally, we can implement the adapter in our component:
+
+```tsx
+import React from "react";
+import { ChartAdapter } from "./ChartAdapter";
+
+const myData = [
+  { label: "Apples", amount: 10 },
+  { label: "Bananas", amount: 20 },
+];
+
+export default function App() {
+  return (
+    <div>
+      <h1>Using the Chart Adapter</h1>
+      <ChartAdapter data={myData} />
+    </div>
+  );
+}
+```
+
+## Decorator
+
+The Decorator pattern lets you add new behaviors or responsibilities to an object dynamically. In React, you can see parallels in Higher Order Components (HOCs) or even some custom hooks that wrap additional logic around a component.
+
+For example, we can create a decorator that logs its props each time the component is rendered:
+
+```tsx
+import React, { useEffect } from "react";
+
+export function withLogger(WrappedComponent) {
+  return function Logger(props) {
+    useEffect(() => {
+      console.log("Props:", props);
+    }, [props]);
+
+    return <WrappedComponent {...props} />;
+  };
+}
+```
+
+A basic button that we'll decorate:
+
+```tsx
+import React from "react";
+
+export function BasicButton({ onClick, children }) {
+  return <button onClick={onClick}>{children}</button>;
+}
+```
+
+And the implementation:
+
+```tsx
+import React from "react";
+import { withLogger } from "./withLogger";
+import { BasicButton } from "./BasicButton";
+
+const LoggedButton = withLogger(BasicButton);
+
+export default function App() {
+  return (
+    <div>
+      <LoggedButton onClick={() => alert("Clicked!")}>Click Me</LoggedButton>
+    </div>
+  );
+}
+```
+
+The decorator pattern is not to be confused with React's *provider* pattern like below:
+
+```tsx
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html>
+      <body>          
+          <ClerkProvider>
+            {children}
+          </ClerkProvider>
+        </Suspense>
+      </body>
+    </html>
+  );
+}
+```
+
+> Providers in React are a standard composition approach, enabling child components to consume data from a shared context. It doesn’t modify how the child is rendered on a "component by component" basis; it just makes additional data/logic available.
+
+Where you'll typically see the decorator pattern in React is when custom hooks inject behavior to a component:
+
+```tsx
+import React, { useEffect } from "react";
+
+const useLogging = (props: any) => {
+  useEffect(() => {
+    console.log('Props:', props);
+  }, [props]);
+};
+
+const DecoratedComponent: React.FC<{ message: string }> = (props) => {
+  useLogging(props);
+  return <div>{props.message}</div>;
+};
+```
+
+## Command
+
+The Command pattern encapsulates a request as an object, allowing you to parameterize clients with queues, requests, and operations. In React, you can see this pattern used in undo/redo functionality, or in managing complex state transitions.
+
+Here's a simple example of an undo/redo hook:
+
+```tsx
+import { useState } from "react";
+
+export const useUndo = <T,>(initialValue: T) => {
+  const [history, setHistory] = useState<T[]>([initialValue]);
+  const [pointer, setPointer] = useState(0);
+
+  const currentValue = history[pointer];
+
+  const set = (newValue: T) => {
+    const updatedHistory = history.slice(0, pointer + 1);
+    updatedHistory.push(newValue);
+    setHistory(updatedHistory);
+    setPointer(updatedHistory.length - 1);
+  };
+
+  const undo = () => {
+    setPointer((prev) => Math.max(prev - 1, 0));
+  };
+
+  const redo = () => {
+    setPointer((prev) => Math.min(prev + 1, history.length - 1));
+  };
+
+  return [currentValue, set, undo, redo] as const;
+};
+```
+
+Then we define our "commands":
+
+```tsx
+export const incrementCommand = (value) => value + 1;
+export const decrementCommand = (value) => value - 1;
+```
+
+And the implementation:
+
+```tsx
+import React from "react";
+import { useUndo } from "./useUndo";
+import { incrementCommand, decrementCommand } from "./commands";
+
+export const CounterWithUndo: React.FC = () => {
+  const [count, setCount, undo, redo] = useUndo(0);
+
+  const executeCommand = (command: (value: number) => number) => {
+    setCount((prev) => command(prev));
+  };
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => executeCommand(incrementCommand)}>Increment</button>
+      <button onClick={() => executeCommand(decrementCommand)}>Decrement</button>
+      <button onClick={undo}>Undo</button>
+      <button onClick={redo}>Redo</button>
+    </div>
+  );
+};
+```
+
+How this works:
+  1. The `useUndo` hook manages a list of past states (the “history”)
+	2. Each new command pushes a new state onto the history stack
+	3. undo and redo simply moves a pointer through the history array, letting you revert or replay commands
+
+## Composite
+
+The Composite pattern lets you compose objects into tree structures to represent part-whole hierarchies. In React, you can see this pattern used in rendering nested components, like in a tree view or a list of items.
+
+Here's an example of a tree component (where each node can contain children, or be a leaf). The tree is rendered recursively.
+
+First, we define the tree node interface:
+
+```tsx
+export interface CompositeNode {
+  id: number;
+  name: string;
+  children?: CompositeNode[];
+}
+```
+
+Then, we create a recursive tree component. In React, the composite pattern is often demonstrated by a recursive component that can render both leaf nodes and composite nodes:
+
+```tsx
+import React from "react";
+import { CompositeNode } from "./compositeTypes";
+
+export const TreeComponent: React.FC<{ node: CompositeNode }> = ({ node }) => {
+  // If there are no children, it's effectively a leaf node
+  if (!node.children || node.children.length === 0) {
+    return <li>{node.name}</li>;
+  }
+
+  // Otherwise, render this node and recursively render children
+  return (
+    <li>
+      <strong>{node.name}</strong>
+      <ul>
+        {node.children.map((child) => (
+          <TreeComponent key={child.id} node={child} />
+        ))}
+      </ul>
+    </li>
+  );
+};
+```
+
+And the implementation:
+
+```tsx
+import React from "react";
+import { TreeComponent } from "./TreeComponent";
+import { CompositeNode } from "./compositeTypes";
+
+const rootNode: CompositeNode = {
+  id: 1,
+  name: "Root",
+  children: [
+    { id: 2, name: "Child A" },
+    {
+      id: 3,
+      name: "Child B",
+      children: [
+        { id: 4, name: "Grandchild 1" },
+        { id: 5, name: "Grandchild 2" },
+      ],
+    },
+  ],
+};
+
+function App() {
+  return (
+    <div>
+      <h1>Composite Tree Example</h1>
+      <ul>
+        <TreeComponent node={rootNode} />
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+```
+
+In the Composite pattern, leaf objects and composite objects (those containing other objects) are treated the same way.
+
+The TreeComponent handles both cases:
+  - If leaf, render a simple `<li>`.
+  - If composite, recursively render child nodes inside a `<ul>`.
+
+> This lets you build and traverse a tree of nested components uniformly, which is the essence of the Composite pattern.
+
+## Conclusion
+
+I hope that these examples help you to see how you've probably been already using design patterns in React without realizing it! But being more aware of them is helpful in diagnosing issues, understanding fundamentals, and communicating complicated features with other developers using the simple design patterns as a starting point.
