@@ -1,0 +1,107 @@
+---
+title: 'Own Your AI Code Assistant'
+publishedAt: '2025-05-28'
+summary: "A guide to building your own AI code assistant with open source tools."
+image: '/static/images/ai-coding/ai-own-banner.png'
+---
+
+![](/static/images/ai-coding/ai-own-banner.png)
+
+AI coding assistants are great productivity tools, but I've been losing my mind over the past couple weeks over one thing that blows up my train of thought:
+
+![](/static/images/ai-coding/error.png)
+
+I'm going along with some simple things that are clearly programming related and not "inappropriate," and all of the sudden Copilot decides to just shut down every request.
+
+![](/static/images/ai-coding/error2.png)
+
+### HELLO?
+
+Or I'm working with an Agent and I periodically get this:
+
+![](/static/images/ai-coding/error3.png)
+
+Fine enough, I'll just send the request again, but then I get this:
+
+![](/static/images/ai-coding/error4.png)
+
+And these don't stop! So I'm paying for a service that rate limits me, even though Copilot is unlimited for pro users. Yikes!
+
+We can forgive most of this, since they're either bugs, AI hallucinations, or I just need to start with a fresh history session.
+
+But sometimes these interruptions don't stop, and sometimes we need a backup plan.
+
+### Enter Your Own AI Code Assistant
+
+I wrote this post to encourage you to try using your own locally hosted AI model, whether as your primary assistant or as a backup in my case. And it ended up being really easy.
+
+My requirements:
+
+- Should run in VSCode just like Copilot
+- Should be able to run on either my local machine or my own server
+- Needs to work with Agent tooling
+- No signup or API keys required
+- Should be free and open source
+
+There are a couple VSCode extensions that can do a mixture of these things, but the best one I went with is [Continue](https://marketplace.visualstudio.com/items?itemName=Continue.continue).
+
+Continue has an optional signup for using their predefined model configs, but you can actually just ignore it if you're using your own models, and stay 100% "offline."
+
+When you install the extension, you'll update a `config.yaml` file to point to your local model. What's great about it is it works with [LM Studio](https://lmstudio.ai/), so in my case I have a micro PC server I run that uses an eGPU to run the models, and I can connect to it from my `Continue` extension in VSCode.
+
+`Continue` normally doesn't allow you to use Agent tooling unless the model comes from their special list, so what you do (that they don't document) is add a `capabilities` section to the model in your `config.yaml` file, telling it that it can use Agents:
+
+```yaml
+    capabilities:
+      - tool_use
+```
+
+The model I chose is [Qwen 2.5 Coder 7B](https://huggingface.co/qwen/qwen2.5-coder-7b-instruct), which is one of the best open source Agent supported coding models out there.
+
+Add it to LM Studio either locally or on another server, and then you can connect to it from the `Continue` extension by updating the `config.yaml` file, like below:
+
+```yaml
+name: Local Assistant
+version: 1.0.0
+schema: v1
+models:
+  - name: Qwen 2.5 Coder 7B
+    provider: lmstudio
+    model: qwen/qwen2.5-coder-7b-instruct
+    apiBase: http://<LM SERVER IP ADDRESS>:1234/v1
+    capabilities:
+      - tool_use
+context:
+  - provider: code
+  - provider: docs
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: folder
+  - provider: codebase
+```
+
+You'll be able to select any models you have in the config through the extension's chat interface:
+
+![](/static/images/ai-coding/continue.png)
+
+And if you add the tool capability correctly, you can select the Agent option which will behave similarly to Copilot's.
+
+![](/static/images/ai-coding/agent.png)
+
+### Conclusion
+
+Running models this way is actually _really_ fast. It also has these perks:
+
+- They respond almost instantly
+- They can perform the same advanced Agent tasks you'd expect
+- No more rate limits
+- No more "Responsible AI" filters
+- You have 100% ownership of the model and data
+- You can literally do whatever you want with it
+
+The biggest downside I've experienced is the reasoning ability. For more complex tasks, it takes a couple iterations for it to get to the point, whereas Copilot can get the right answer on the first try.
+
+That's why I'm keeping this as a backup and not a primary assistant for now, so that I can keep moving forward with my work without interruptions. It's not a 100% replacement in terms of quality, but it's better than no assistant at all.
+
+I hope this helps you to try out new things with owning your own AI code assistant. It's a great way to learn more about the technology and have more control over your coding experience.
