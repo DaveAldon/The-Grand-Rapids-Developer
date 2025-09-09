@@ -1,0 +1,192 @@
+---
+title: 'Rules of Thumb for PowerBI'
+publishedAt: '2025-09-09'
+summary: "My lessons learned as a software developer working with PowerBI and Data Science."
+image: '/static/images/powerbi-banner.jpg'
+---
+
+![](/static/images/powerbi-banner.jpg)
+
+This month I wrapped up a project that was very difficult for me on a technical level. I've been a software developer for over 10 years, but I had never really been involved in the technical process of **data science** before.
+
+What's the difference? Shouldn't any developer understand data? Shouldn't developers understand data integrity, normalization, update frequency, missing data, outliers, inconsistencies, efficiencies, scalability, ease of querying, and semantic modeling?
+
+I used to think the answer was yes. But at massive scales with companies processing millions of rows of data every day, I quickly learned how specialized this field is. I also learned that PowerBI does not work the way a developer would expect at all.
+
+So I made this post to be a quick summary of the major rules of thumb I learned while working on this project. I've put together the highest impact, easiest things you can do to guarantee a well organized, collaborative, and successful data project incorporating PowerBI. I have a lot more confidence going into a room to talk about data and reporting now than I ever did before.
+
+Contents:
+- [#1: You must have a unified semantic model](#1-you-must-have-a-unified-semantic-model)
+- [#2: Respect the layers of data flow](#2-respect-the-layers-of-data-flow)
+- [#3: Push efficiency to the source view](#3-push-efficiency-to-the-source-view)
+- [#4: Format at the model level, not the report level](#4-format-at-the-model-level-not-the-report-level)
+- [#5: Use explicit measures instead of implicit](#5-use-explicit-measures-instead-of-implicit)
+- [#6: Share measures as a calculated table](#6-share-measures-as-a-calculated-table)
+- [#7: Find out about financial calendar requirements early](#7-find-out-about-financial-calendar-requirements-early)
+- [#8: Use a mature DimDates table](#8-use-a-mature-dimdates-table)
+
+## #1: You must have a unified semantic model
+
+Unify your models early. Don't let them fragment. There should only be one source of truth for your data in a project.
+
+When you have multiple PowerBI dashboards, it's easy to make measures and custom source queries in each one. But this leads to confusion, inconsistency, and a broken model. If you have a "Total Sales" measure in one dashboard, and a "Total Sales" measure in another, how do you know they are the same? What if one is calculated differently than the other by accident? There's no way to tell without manual inspection.
+
+When your models are deployed, you can take a look at their relationships online. Below is a good example where the left are the various data sources, and the right are the different dashboards. In the middle is a single semantic model. When it updates, they all update. If you see multiple semantic models, that's a red flag.
+
+![](/static/images/powerbi/semantic-model.png)
+
+## #2: Respect the layers of data flow
+
+Depending on how complex your data intake is, you should be dealing with multiple layers of databases. You need to respect these layers and not abuse them.
+
+- Mirror Layer - Where you bring in raw data from your sources. You should not be transforming or cleaning data here. Just bring it in as-is
+- Staging Layer - Where you clean, transform, and prepare your data for analysis. You can create views, aggregate data, and make it ready for the semantic model
+- Data Warehouse Layer - Where you store your cleaned and transformed data in a structured way. This is what PowerBI should connect to
+
+Sometimes there are more, like presentation layers, or data lakes, but the above three are the most common.
+
+## #3: Push efficiency to the source view
+
+PowerBI has two views: the model view, and the source view. The model view is where you create measures, relationships, and calculated columns. The source view is where you connect to your data sources, and transform the data before it gets to the model.
+
+If you're dealing with large datasets, the more you transform it with measures, the slower everything gets. But sources can slow things down too if abused.
+
+Take a look at your source view, and see how many steps you have. The more steps there are, the slower your model will be. Try to push as much of the transformation logic to the source view as possible.
+
+![](/static/images/powerbi/steps.png)
+
+And better yet, if your staging layer can handle it, do as much outside of PowerBI as possible. Use SQL views, stored procedures, or whatever your database supports to do the heavy lifting before it even gets to PowerBI.
+
+But sometimes we just have to do it in PowerBI. In that case, try to minimize the number of steps in the source view.
+
+![](/static/images/powerbi/source.png)
+
+## #4: Format at the model level, not the report level
+
+When you create a measure in PowerBI, you can set its format. But if you do this at the report, or even worse, the visual level, you will have a nightmare on your hands if anything changes.
+
+Do it once at the model level, and never again. After updating, all your reports will have the correct format in sync automatically.
+
+![](/static/images/powerbi/type.png)
+
+## #5: Use explicit measures instead of implicit
+
+Implicit measures are those that you create on the fly in a visual by dragging a field into the values area. Explicit measures are those that you create in the model view using DAX.
+
+It's best practice to rely on explicit DAX measures to make your reports more resilient over time. Updating a measure definition is far quicker and safer than having to adjust implicit calculations across every visual, filter, conditional formatting rule, linked report, Excel dataset or whatever your source is.
+
+## #6: Share measures as a calculated table
+
+If your measures are spelled out in a single table, your team will thank you when they have to review your measures, or if someone is taking your work over and has to learn what you've done.
+
+PowerBI has a feature where you can create a calculated table with this code:
+
+```DAX
+<Table_Name> = INFO.VIEW.MEASURES()
+```
+
+![](/static/images/powerbi/table.png)
+
+This creates a table with all of your DAX spelled out in one place:
+
+![](/static/images/powerbi/measures.png)
+
+You can also view the storage mode of every data source:
+
+![](/static/images/powerbi/storage.png)
+
+And also the relationships:
+
+![](/static/images/powerbi/relationship.png)
+
+Microsoft has a great article on this [here](https://powerbi.microsoft.com/en-us/blog/power-bi-october-2024-feature-summary/#post-28196-_Toc179458536).
+
+## #7: Find out about financial calendar requirements early
+
+Does your organization use a 544 calendar? Is your fiscal calendar different from the standard calendar? If so, find out early and make sure your DimDates table reflects this.
+
+## #8: Use a mature DimDates table
+
+You're probably going to have to use dates at some point. It's easy to wrestle with this for weeks, so just use a mature DimDates table from the start.
+
+This is the one I use. It has nearly everything I need for the majority of use cases. Just drop it in as a calculated table, set it as a date table, relate it to your fact tables, and you're good to go. Adjust as needed for fiscal year start month, or if you need more features.
+
+```DAX
+let
+    // configurations start
+    Today=Date.From(DateTime.LocalNow()), // today's date
+    FromYear = (Date.Year(DateTime.Date(DateTime.FixedLocalNow()))) -2, // 3 year history, // set the start year of the date dimension. dates start from 1st of January of this year
+    ToYear= (Date.Year(DateTime.Date(DateTime.FixedLocalNow()))) +1, /* +1 means current year + 1*/ // set the end year of the date dimension. dates end at 31st of December of this year
+    StartofFiscalYear = 1, // set the month number that is start of the financial year. example; if fiscal year start is July, value is 7
+    FirstDayofWeek=Day.Monday, // set the week's start day, values: Day.Monday, Day, Sunday....
+    // configuration end
+    FromDate=#date(FromYear,1,1),
+    ToDate=#date(ToYear,12,31),
+    Source=List.Dates(
+        FromDate,
+        Duration.Days(ToDate-FromDate)+1,
+        #duration(1,0,0,0)
+    ),
+    #"Converted to Table" = Table.FromList(Source, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Renamed Column: [Date]" = Table.RenameColumns(#"Converted to Table",{{"Column1", "Date"}}),
+    #"Changed Data Type: To date" = Table.TransformColumnTypes(#"Renamed Column: [Date]",{{"Date", type date}}),
+    #"Inserted [Year] Int" = Table.AddColumn(#"Changed Data Type: To date", "Year", each Date.Year([Date]), Int64.Type),
+    #"Inserted [Start of Year] date" = Table.AddColumn(#"Inserted [Year] Int", "Start of Year", each Date.StartOfYear([Date]), type date),
+    #"Inserted [End of Year] date" = Table.AddColumn(#"Inserted [Start of Year] date", "End of Year", each Date.EndOfYear([Date]), type date),
+    #"Inserted [Month] Int" = Table.AddColumn(#"Inserted [End of Year] date", "Month", each Date.Month([Date]), Int64.Type),
+    #"Inserted [Start of Month] date" = Table.AddColumn(#"Inserted [Month] Int", "Start of Month", each Date.StartOfMonth([Date]), type date),
+    #"Inserted [End of Month] date" = Table.AddColumn(#"Inserted [Start of Month] date", "End of Month", each Date.EndOfMonth([Date]), type date),
+    #"Inserted [Days in Month] int" = Table.AddColumn(#"Inserted [End of Month] date", "Days in Month", each Date.DaysInMonth([Date]), Int64.Type),
+    #"Inserted [Day] int" = Table.AddColumn(#"Inserted [Days in Month] int", "Day", each Date.Day([Date]), Int64.Type),
+    #"Inserted [Day Name] text" = Table.AddColumn(#"Inserted [Day] int", "Day Name", each Date.DayOfWeekName([Date]), type text),
+    #"Inserted [Day of Week] int" = Table.AddColumn(#"Inserted [Day Name] text", "Day of Week", each Date.DayOfWeek([Date]), Int64.Type),
+
+    #"Inserted [Day of Year] int" = Table.AddColumn(#"Inserted [Day of Week] int", "Day of Year", each Date.DayOfYear([Date]), Int64.Type),
+    #"Inserted [Month Name] text" = Table.AddColumn(#"Inserted [Day of Year] int", "Month Name", each Date.MonthName([Date]), type text),
+    #"Inserted [Quarter] int" = Table.AddColumn(#"Inserted [Month Name] text", "Quarter", each Date.QuarterOfYear([Date]), Int64.Type),
+    #"Inserted [Start of Quarter] date" = Table.AddColumn(#"Inserted [Quarter] int", "Start of Quarter", each Date.StartOfQuarter([Date]), type date),
+    #"Inserted [End of Quarter] date" = Table.AddColumn(#"Inserted [Start of Quarter] date", "End of Quarter", each Date.EndOfQuarter([Date]), type date),
+    #"Inserted [Week of Year] int" = Table.AddColumn(#"Inserted [End of Quarter] date", "Week of Year", each Date.WeekOfYear([Date],FirstDayofWeek), Int64.Type),
+    #"Inserted [Week of Month] int" = Table.AddColumn(#"Inserted [Week of Year] int", "Week of Month", each Date.WeekOfMonth([Date],FirstDayofWeek), Int64.Type),
+    #"Inserted [Start of Week] date" = Table.AddColumn(#"Inserted [Week of Month] int", "Start of Week", each Date.StartOfWeek([Date],FirstDayofWeek), type date),
+    #"Inserted [End of Week] date" = Table.AddColumn(#"Inserted [Start of Week] date", "End of Week", each Date.EndOfWeek([Date],FirstDayofWeek), type date),
+    #"**Start of Fiscal Base Date Temp Column"=13-StartofFiscalYear,
+    #"Establishing Temp Fiscal Base Date Step 2"=if(#"**Start of Fiscal Base Date Temp Column">=12 or #"**Start of Fiscal Base Date Temp Column"<0) then 0 else #"**Start of Fiscal Base Date Temp Column",
+    #"Inserted [FiscalBaseDateTemp] date **" = Table.AddColumn(#"Inserted [End of Week] date", "FiscalBaseDateTemp", each Date.AddMonths([Date],#"Establishing Temp Fiscal Base Date Step 2"), type date),
+    #"Inserted [Fiscal Year]" = Table.AddColumn(#"Inserted [FiscalBaseDateTemp] date **", "Fiscal Year", each Date.Year([FiscalBaseDateTemp])),
+    #"Changed Type: [Fiscal Year] int" = Table.TransformColumnTypes(#"Inserted [Fiscal Year]",{{"Fiscal Year", Int64.Type}}),
+    #"Inserted [Fiscal Quarter] int" = Table.AddColumn(#"Changed Type: [Fiscal Year] int", "Fiscal Quarter", each Date.QuarterOfYear([FiscalBaseDateTemp]), Int64.Type),
+    #"Inserted [Fiscal Month] int" = Table.AddColumn(#"Inserted [Fiscal Quarter] int", "Fiscal Month", each Date.Month([FiscalBaseDateTemp]), Int64.Type),
+    #"Removed Column: [FiscalBaseDateTemp]" = Table.RemoveColumns(#"Inserted [Fiscal Month] int",{"FiscalBaseDateTemp"}),
+    #"Inserted [Offset Day] duration" = Table.AddColumn(#"Removed Column: [FiscalBaseDateTemp]", "Offset Day", each [Date]-Today, type duration),
+    #"Changed Type: [Offset Day] int" = Table.TransformColumns(#"Inserted [Offset Day] duration",{{"Offset Day", Duration.Days, Int64.Type}}),
+    #"Inserted [Month Offset] dual" = Table.AddColumn(#"Changed Type: [Offset Day] int", "Month Offset", each (([Year]-Date.Year(Today))*12)
++([Month]-Date.Month(Today))),
+    #"Changed Type [Month Offset] int" = Table.TransformColumnTypes(#"Inserted [Month Offset] dual",{{"Month Offset", Int64.Type}}),
+    #"Inserted [Year Offset] dual" = Table.AddColumn(#"Changed Type [Month Offset] int", "Year Offset", each [Year]-Date.Year(Today)),
+    #"Changed Type [Year Offset] int" = Table.TransformColumnTypes(#"Inserted [Year Offset] dual",{{"Year Offset", Int64.Type}}),
+    #"Inserted [Quarter Offset] dual" = Table.AddColumn(#"Changed Type [Year Offset] int", "Quarter Offset", each (([Year]-Date.Year(Today))*4)
++([Quarter]-Date.QuarterOfYear(Today))),
+    #"Changed Type [Quarter Offset] int" = Table.TransformColumnTypes(#"Inserted [Quarter Offset] dual",{{"Quarter Offset", Int64.Type}}),
+    #"Inserted [DateKey] dual" = Table.AddColumn(#"Changed Type [Quarter Offset] int", "DateKey", each ( ([Year] * 100) + [Month] ) * 100  + [Day]),
+    #"Changed Type [DateKey] text" = Table.TransformColumnTypes(#"Inserted [DateKey] dual",{{"DateKey", type text}}),
+    #"Inserted [YearMonthKey] dual" = Table.AddColumn(#"Changed Type [DateKey] text", "YearMonthKey", each ([Year] * 100 ) + [Month]),
+    #"Changed Type [YearMonthKey] int" = Table.TransformColumnTypes(#"Inserted [YearMonthKey] dual",{{"YearMonthKey", Int64.Type}}),
+    #"Inserted [Month Abbr] dual" = Table.AddColumn(#"Changed Type [YearMonthKey] int", "Month Abbr", each Text.Start([#"Month Name"], 3)),
+    #"Inserted [Year-Month] dual" = Table.AddColumn(#"Inserted [Month Abbr] dual", "Year-Month", each Text.From([Year]) & "-" & Text.From([Month Abbr])),
+    #"Inserted [Month-Year] dual" = Table.AddColumn(#"Inserted [Year-Month] dual", "Month-Year", each Text.From([Month Abbr]) & "-" & Text.From([Year])),
+    #"Inserted [Year-Month Abbr] text" = Table.AddColumn(#"Inserted [Month-Year] dual", "Year-Month Abbr", each Text.End([#"Year-Month"], 6), type text),
+    #"Changed Type [Date] datetimezone" = Table.TransformColumnTypes(#"Inserted [Year-Month Abbr] text",{{"Date", type datetimezone}}),
+    #"Inserted [Year-Qtr] dual" = Table.AddColumn(#"Changed Type [Date] datetimezone", "Year-Qtr", each Text.From([Year]) & "-Q" &Text.From([Quarter])),
+    #"Abbr [Year-Qtr] text" = Table.TransformColumns(#"Inserted [Year-Qtr] dual", {{"Year-Qtr", each Text.End(_, 5), type text}}),
+    #"Inserted [YearQtrKey] dual" = Table.AddColumn(#"Abbr [Year-Qtr] text", "YearQtrKey", each ([Year] * 10) + [Quarter]),
+   #"Inserted [YearWeekKey] dual" = Table.AddColumn(#"Inserted [YearQtrKey] dual", "YearWeekKey", each ([Year] * 100) + [Week of Year]),
+    #"Changed Type [Key] to int" = Table.TransformColumnTypes(#"Inserted [YearWeekKey] dual",{{"YearQtrKey", Int64.Type}, {"YearWeekKey", Int64.Type}}),
+    #"Sorted Rows" = Table.Sort(#"Changed Type [Key] to int",{{"Date", Order.Ascending}})
+in
+    #"Sorted Rows"
+```
+
+## Conclusion
+
+There are a lot more things to consider when working with PowerBI, and many more best practices. But these are the ones that had the biggest impact on my work on this project. I hope they help you as much as they helped me!
