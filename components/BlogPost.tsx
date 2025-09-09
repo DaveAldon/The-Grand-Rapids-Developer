@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { Blog } from '.contentlayer/generated';
+import type { Blog } from 'contentlayer/generated';
 import Image from 'next/image';
 
 export default function BlogPost({
