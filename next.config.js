@@ -1,10 +1,9 @@
-const { withContentlayer } = require('next-contentlayer');
+const { withContentlayer } = require('next-contentlayer2');
 
 /**
  * @type {import('next').NextConfig}
  */
 module.exports = withContentlayer({
-  swcMinify: true,
   reactStrictMode: true,
   images: {
     domains: [
@@ -21,9 +20,6 @@ module.exports = withContentlayer({
       'optimise2.assets-servd.host', // Optimise Images
       'www.grandrapidsdeveloper.com' // My Images
     ]
-  },
-  experimental: {
-    legacyBrowsers: false
   },
   async headers() {
     return [

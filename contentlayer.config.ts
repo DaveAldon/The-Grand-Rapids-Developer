@@ -2,7 +2,7 @@ import {
   ComputedFields,
   defineDocumentType,
   makeSource
-} from 'contentlayer/source-files';
+} from 'contentlayer2/source-files';
 
 import readingTime from 'reading-time';
 import remarkGfm from 'remark-gfm';
@@ -15,7 +15,7 @@ const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
   wordCount: {
     type: 'number',
-    resolve: (doc) => doc.body.raw.split(/\s+/gu).length
+    resolve: (doc) => doc.body.raw.split(/\s+/g).length
   },
   tweetIds: {
     type: 'json',
