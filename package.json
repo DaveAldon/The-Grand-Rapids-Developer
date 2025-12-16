@@ -20,7 +20,7 @@
     "googleapis": "48.0.0",
     "lucide-react": "0.543.0",
     "motion": "^10.8.1",
-    "next": "^15.5.2",
+    "next": "15.5.9",
     "next-auth": "4.24.11",
     "next-contentlayer2": "0.5.8",
     "next-themes": "^0.2.0",
