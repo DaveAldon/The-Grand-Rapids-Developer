@@ -3,10 +3,14 @@ import Link from 'next/link';
 
 import Container from '../components/Container';
 import BlogPostCard from '../components/BlogPostCard';
-import Subscribe from '../components/Subscribe';
 import PeriodicTable from 'components/periodicTable/periodicTable';
+import { InferGetStaticPropsType } from 'next';
+import { pick } from 'contentlayer2/client';
+import { allBlogs } from 'contentlayer/generated';
 
-export default function Home({ videos }) {
+export default function Home({
+  latestPosts
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <Container>
       <div className="flex flex-col justify-center items-start max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
@@ -44,25 +48,28 @@ export default function Home({ videos }) {
         <h3 className="font-bold text-2xl md:text-4xl tracking-tight mb-6 text-black dark:text-white">
           Featured Posts
         </h3>
-        <div className="flex gap-6 flex-col md:flex-row">
-          <BlogPostCard
-            title="Own Your AI Code Assistant"
-            slug="Own-Your-AI-Code-Assistant"
-            gradient="from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]"
-            imageUrl={'/static/images/ai-coding/ai-own-banner.png'}
-          />
-          <BlogPostCard
-            title="Design Patterns in React"
-            slug="Design-Patterns-in-React"
-            gradient="from-[#D8B4FE] to-[#F86139]"
-            imageUrl={'/static/images/design-patterns-banner.png'}
-          />
-          <BlogPostCard
-            title="How to: Machine Learning in the 1980s"
-            slug="How-to-machine-learning-in-the-1980s"
-            gradient="from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]"
-            imageUrl={'/static/images/ml-in-1980s/ml-se30-banner.png'}
-          />
+        <div className="flex gap-6 flex-col md:flex-row items-stretch w-full md:w-auto">
+          {latestPosts.map((post, index) => {
+            const gradients = [
+              'from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
+              'from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
+              //'from-[#D8B4FE] to-[#F86139]',
+              'from-[#FDE68A] via-[#FCA5A5] to-[#FECACA]'
+            ];
+            return (
+              <div key={post.slug} className="w-full md:flex-1 flex">
+                <BlogPostCard
+                  featured={index === 0}
+                  title={post.title}
+                  slug={post.slug}
+                  gradient={gradients[index]}
+                  imageUrl={post.image}
+                  summary={post.summary}
+                  publishedAt={post.publishedAt}
+                />
+              </div>
+            );
+          })}
         </div>
         <Link
           href="/blog"
@@ -92,4 +99,18 @@ export default function Home({ videos }) {
       </div>
     </Container>
   );
+}
+
+export function getStaticProps() {
+  const posts = allBlogs
+    .map((post) =>
+      pick(post, ['slug', 'title', 'publishedAt', 'image', 'summary'])
+    )
+    .sort(
+      (a, b) =>
+        Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt))
+    )
+    .slice(0, 3);
+
+  return { props: { latestPosts: posts } };
 }
