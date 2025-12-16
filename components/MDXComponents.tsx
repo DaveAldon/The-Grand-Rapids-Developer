@@ -5,7 +5,7 @@ import ProsCard from 'components/ProsCard';
 import ConsCard from 'components/ConsCard';
 import Unsplash from 'components/metrics/Unsplash';
 import Analytics from 'components/metrics/Analytics';
-import YouTube from 'components/metrics/Youtube';
+//import YouTube from 'components/metrics/Youtube';
 import Step from 'components/Step';
 import ImageWithTheme from 'components/ImageWithTheme';
 
@@ -36,6 +36,30 @@ function Callout(props) {
     </div>
   );
 }
+
+const YouTube = ({ id }: { id: string }) => (
+  <div
+    style={{
+      position: 'relative',
+      paddingBottom: '56.25%',
+      height: 0,
+      overflow: 'hidden'
+    }}
+  >
+    <iframe
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        border: 'none'
+      }}
+      src={`https://www.youtube.com/embed/${id}`}
+      allowFullScreen
+    />
+  </div>
+);
 
 const MDXComponents = {
   Image: RoundedImage,
