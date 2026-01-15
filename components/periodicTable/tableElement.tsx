@@ -37,10 +37,13 @@ export const TableElement = (props: {
   }) => {
     if (props.link)
       return (
-        <Link legacyBehavior href={props.link ? props.link.toString() : '#'}>
-          <a target="_blank" rel="noopener noreferrer">
-            {props.children}
-          </a>
+        <Link
+          href={props.link ? props.link.toString() : '#'}
+          target="_blank"
+          rel="noopener noreferrer">
+
+          {props.children}
+
         </Link>
       );
     else return <>{props.children}</>;
