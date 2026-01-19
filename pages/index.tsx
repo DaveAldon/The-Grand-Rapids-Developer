@@ -25,8 +25,8 @@ export default function Home({
               David Crawford
             </h1>
             <h2 className="text-gray-700 dark:text-gray-200 mb-4">
-              Software Developer at{' '}
-              <span className="font-semibold">Michigan Labs</span>
+              Lead Software Engineer at{' '}
+              <span className="font-semibold">Michigan Software Labs</span>
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-16">
               Sharing cool techniques and interesting technology for anyone who
