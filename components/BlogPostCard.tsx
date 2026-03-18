@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'components/Link';
 import cn from 'classnames';
 import Image from 'next/image';
 import ElectricBorder from './ElectricBorder/ElectricBorder';

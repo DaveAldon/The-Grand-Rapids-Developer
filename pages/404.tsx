@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'components/Link';
 
 import Container from 'components/Container';
 
@@ -17,10 +17,9 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="p-1 sm:p-4 w-64 font-bold mx-auto bg-gray-200 dark:bg-gray-800 text-center rounded-md text-black dark:text-white">
-          
-            Return Home
-          
+          className="p-1 sm:p-4 w-64 font-bold mx-auto bg-gray-200 dark:bg-gray-800 text-center rounded-md text-black dark:text-white"
+        >
+          Return Home
         </Link>
       </div>
     </Container>

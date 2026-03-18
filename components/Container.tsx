@@ -1,20 +1,20 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
-import NextLink from 'next/link';
 import cn from 'classnames';
 
 import Footer from 'components/Footer';
+import Link from 'components/Link';
 import MobileMenu from 'components/MobileMenu';
-import Link from 'next/link';
 
 function NavItem({ href, text }) {
   const router = useRouter();
   const isActive = router.asPath === href;
 
   return (
-    <NextLink
+    <Link
       href={href}
+      prefetch
       className={cn(
         isActive
           ? 'font-semibold text-gray-800 dark:text-gray-200'
@@ -23,7 +23,7 @@ function NavItem({ href, text }) {
       )}
     >
       <span className="capsize">{text}</span>
-    </NextLink>
+    </Link>
   );
 }
 

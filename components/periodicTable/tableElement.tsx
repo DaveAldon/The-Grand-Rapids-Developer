@@ -1,6 +1,6 @@
 import React from 'react';
 import { Categories } from './categories.enum';
-import Link from 'next/link';
+import Link from 'components/Link';
 
 export const TableElement = (props: {
   title?: String;
@@ -40,10 +40,9 @@ export const TableElement = (props: {
         <Link
           href={props.link ? props.link.toString() : '#'}
           target="_blank"
-          rel="noopener noreferrer">
-
+          rel="noopener noreferrer"
+        >
           {props.children}
-
         </Link>
       );
     else return <>{props.children}</>;

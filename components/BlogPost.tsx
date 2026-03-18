@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'components/Link';
 import type { Blog } from 'contentlayer/generated';
 import Image from 'next/image';
 

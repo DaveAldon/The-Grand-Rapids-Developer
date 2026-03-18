@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import Link from 'components/Link';
 
 const SocialLink = ({ href, title }) => (
   <div className="p-2">

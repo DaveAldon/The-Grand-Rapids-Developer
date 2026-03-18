@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'components/Link';
 
 import Analytics from 'components/metrics/Analytics';
 import Container from 'components/Container';
