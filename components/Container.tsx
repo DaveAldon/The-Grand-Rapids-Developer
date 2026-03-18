@@ -14,7 +14,6 @@ function NavItem({ href, text }) {
   return (
     <Link
       href={href}
-      prefetch
       className={cn(
         isActive
           ? 'font-semibold text-gray-800 dark:text-gray-200'
@@ -53,7 +52,7 @@ export default function Container(props) {
         <meta content={meta.description} name="description" />
         <link
           rel="canonical"
-          href={`https://https://the-grand-rapids-developer.vercel.app${router.asPath}`}
+          href={`https://the-grand-rapids-developer.vercel.app${router.asPath}`}
         />
         <meta property="og:type" content={meta.type} />
         <meta property="og:site_name" content="David Crawford" />

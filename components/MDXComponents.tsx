@@ -3,9 +3,6 @@ import Image from 'next/image';
 
 import ProsCard from 'components/ProsCard';
 import ConsCard from 'components/ConsCard';
-import Unsplash from 'components/metrics/Unsplash';
-import Analytics from 'components/metrics/Analytics';
-//import YouTube from 'components/metrics/Youtube';
 import Step from 'components/Step';
 import ImageWithTheme from 'components/ImageWithTheme';
 
@@ -66,11 +63,9 @@ const MDXComponents = {
   ImageWithTheme,
   a: CustomLink,
   Callout,
-  Analytics,
   ConsCard,
   ProsCard,
   Step,
-  Unsplash,
   YouTube
 };
 

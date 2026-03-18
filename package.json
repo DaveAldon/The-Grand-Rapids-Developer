@@ -10,18 +10,14 @@
     "kill": "kill -9 $(lsof -ti:3000)"
   },
   "dependencies": {
-    "@mailchimp/mailchimp_marketing": "^3.0.80",
-    "@prisma/client": "^3.15.0",
     "@tailwindcss/typography": "0.5.2",
     "chalk": "^5.6.2",
     "classnames": "^2.3.1",
     "contentlayer2": "0.5.8",
     "date-fns": "2.28.0",
-    "googleapis": "48.0.0",
     "lucide-react": "0.543.0",
     "motion": "^10.8.1",
     "next": "15.5.9",
-    "next-auth": "4.24.11",
     "next-contentlayer2": "0.5.8",
     "next-themes": "^0.2.0",
     "preact": "^10.27.1",
@@ -29,7 +25,6 @@
     "react-dom": "^19.1.1",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
-    "swr": "2.3.6",
     "tailwindcss": "3.0.24"
   },
   "devDependencies": {
@@ -40,7 +35,6 @@
     "globby": "13.1.1",
     "postcss": "^8.4.13",
     "prettier": "2.6.2",
-    "prisma": "3.14.0",
     "reading-time": "^1.4.0",
     "rehype": "12.0.1",
     "rehype-autolink-headings": "7.1.0",

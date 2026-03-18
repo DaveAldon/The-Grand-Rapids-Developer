@@ -9,7 +9,8 @@ async function generate() {
     'data/**/*.mdx',
     '!data/*.mdx',
     '!pages/_*.tsx',
-    '!pages/api',
+    '!pages/api/**',
+    '!pages/dashboard.tsx',
     '!pages/404.tsx'
   ]);
 

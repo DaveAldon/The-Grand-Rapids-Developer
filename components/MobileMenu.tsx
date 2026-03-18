@@ -53,7 +53,7 @@ export default function MobileMenu() {
             className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
             style={{ transitionDelay: '150ms' }}
           >
-            <Link href="/" prefetch className="flex w-auto pb-4">
+            <Link href="/" className="flex w-auto pb-4">
               Home
             </Link>
           </li>
@@ -69,7 +69,7 @@ export default function MobileMenu() {
             className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
             style={{ transitionDelay: '250ms' }}
           >
-            <Link href="/about" prefetch className="flex w-auto pb-4">
+            <Link href="/about" className="flex w-auto pb-4">
               About
             </Link>
           </li>
@@ -77,7 +77,7 @@ export default function MobileMenu() {
             className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
             style={{ transitionDelay: '250ms' }}
           >
-            <Link href="/blog" prefetch className="flex w-auto pb-4">
+            <Link href="/blog" className="flex w-auto pb-4">
               Blog
             </Link>
           </li>
@@ -85,7 +85,7 @@ export default function MobileMenu() {
             className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
             style={{ transitionDelay: '250ms' }}
           >
-            <Link href="/strategy" prefetch className="flex w-auto pb-4">
+            <Link href="/strategy" className="flex w-auto pb-4">
               My Strategy
             </Link>
           </li>
