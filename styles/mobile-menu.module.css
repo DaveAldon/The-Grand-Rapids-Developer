@@ -1,3 +1,5 @@
+@reference './global.css';
+
 .burger {
   transition: opacity 300ms ease;
   border: 0;

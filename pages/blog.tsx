@@ -5,6 +5,7 @@ import BlogPost from 'components/BlogPost';
 import { InferGetStaticPropsType } from 'next';
 import { pick } from 'contentlayer2/client';
 import { allBlogs } from 'contentlayer/generated';
+import { motion } from 'framer-motion';
 
 export default function Blog({
   posts
@@ -20,16 +21,22 @@ export default function Blog({
       description="My thoughts on software development, technology, and writing."
     >
       <div className="flex flex-col items-start justify-center max-w-2xl mx-auto mb-16">
-        <h1 className="mb-4 text-3xl font-bold tracking-tight text-black dark:text-white">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="mb-8 text-4xl tracking-tight font-medium leading-tight text-neutral-900 dark:text-neutral-50 sm:text-5xl lg:text-6xl"
+        >
           Blog
-        </h1>
-        <p className="mb-4 text-gray-600 dark:text-gray-400">
+        </motion.h2>
+        {/* <p className="mb-4 text-gray-600 dark:text-gray-400">
           {`I've been writing in various genres for many years, and this blog is specifically for software development.`}
         </p>
         <p className="mb-4 text-gray-600 dark:text-gray-400">
           {`In total, I've written ${posts.length} articles for The Grand Rapids Developer blog.
             Use the search below to filter by title.`}
-        </p>
+        </p> */}
         <div className="relative w-full mb-4">
           <input
             aria-label="Search articles"

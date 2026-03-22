@@ -6,19 +6,21 @@ const { withContentlayer } = require('next-contentlayer2');
 module.exports = withContentlayer({
   reactStrictMode: true,
   images: {
-    domains: [
-      'i.scdn.co', // Spotify Album Art
-      'pbs.twimg.com', // Twitter Profile Picture
-      'i.pravatar.cc', // Random Profile Picture
-      'static.wixstatic.com', // Wix Images
-      'media.licdn.com', // LinkedIn Pictures
-      'dummyimage.com', // Dummy Images
-      'drive.google.com', // Google Drive Images
-      'is3-ssl.mzstatic.com', // Apple Images
-      'is2-ssl.mzstatic.com', // Apple Images
-      'is1-ssl.mzstatic.com', // Apple Images
-      'optimise2.assets-servd.host', // Optimise Images
-      'www.grandrapidsdeveloper.com' // My Images
+    remotePatterns: [
+      { protocol: 'https', hostname: 'i.scdn.co' }, // Spotify Album Art
+      { protocol: 'https', hostname: 'pbs.twimg.com' }, // Twitter Profile Picture
+      { protocol: 'https', hostname: 'i.pravatar.cc' }, // Random Profile Picture
+      { protocol: 'https', hostname: 'assets.aceternity.com' }, // Aceternity demo images
+      { protocol: 'https', hostname: 'static.wixstatic.com' }, // Wix Images
+      { protocol: 'https', hostname: 'media.licdn.com' }, // LinkedIn Pictures
+      { protocol: 'https', hostname: 'dummyimage.com' }, // Dummy Images
+      { protocol: 'https', hostname: 'drive.google.com' }, // Google Drive Images
+      { protocol: 'https', hostname: 'is3-ssl.mzstatic.com' }, // Apple Images
+      { protocol: 'https', hostname: 'is2-ssl.mzstatic.com' }, // Apple Images
+      { protocol: 'https', hostname: 'is1-ssl.mzstatic.com' }, // Apple Images
+      { protocol: 'https', hostname: 'optimise2.assets-servd.host' }, // Optimise Images
+      { protocol: 'https', hostname: 'www.grandrapidsdeveloper.com' }, // My Images
+      { protocol: 'https', hostname: 'images.unsplash.com' }
     ]
   },
   async headers() {

@@ -33,6 +33,7 @@
     "components/ElectricBorder/ElectricBorder.jsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "saas"
   ]
 }

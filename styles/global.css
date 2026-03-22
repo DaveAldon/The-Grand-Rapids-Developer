@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@config '../tailwind.config.js';
+
+@theme inline {
+  --animate-aurora: aurora 60s linear infinite;
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+}
 
 @font-face {
   font-family: 'IBM Plex Sans';
@@ -28,11 +39,101 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  --site-frame: rgba(255, 255, 255, 0.94);
+  --site-surface: rgba(250, 250, 250, 0.78);
+  --site-border: rgba(234, 234, 234, 0.9);
+}
+
+html.dark {
+  --site-frame: rgba(0, 0, 0, 0.94);
+  --site-surface: rgba(17, 17, 17, 0.82);
+  --site-border: rgba(68, 68, 68, 0.8);
+}
+
 #__next {
   @apply bg-gray-50 dark:bg-gray-900;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+.site-header {
+  background: var(--site-frame);
+  border-color: var(--site-border);
+  border-style: solid;
+  border-width: 0 1px 1px;
+  border-radius: 0 0 2rem 2rem;
+  box-shadow: 0 18px 48px rgba(17, 17, 17, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.site-frame {
+  display: block;
+  position: fixed;
+  z-index: 30;
+  pointer-events: none;
+  background-color: var(--site-frame);
+}
+
+.site-frame--top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+.site-frame--bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+.site-frame--left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 10px;
+}
+
+.site-frame--right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+}
+
+.site-corner {
+  display: block;
+  position: fixed;
+  z-index: 29;
+  pointer-events: none;
+  color: var(--site-frame);
+}
+
+.site-corner--top-left {
+  top: 10px;
+  left: 10px;
+  transform: rotate(90deg);
+}
+
+.site-corner--top-right {
+  top: 10px;
+  right: 10px;
+  transform: rotate(180deg);
+}
+
+.site-corner--bottom-left {
+  bottom: 10px;
+  left: 10px;
+  transform: rotate(0deg);
+}
+
+.site-corner--bottom-right {
+  right: 10px;
+  bottom: 10px;
+  transform: rotate(270deg);
 }
 
 /* https://seek-oss.github.io/capsize/ */
@@ -49,7 +150,8 @@ html {
 }
 
 .skip-nav {
-  @apply absolute px-4 py-3 transition-transform duration-200 transform -translate-y-12 -left-1/4 focus:top-4 focus:translate-y-3 -top-8;
+  @apply absolute -top-8 left-4 -translate-y-12 transform px-4 py-3 transition-transform duration-200 focus:top-4 focus:translate-y-3;
+  z-index: 60;
 }
 
 #skip {
@@ -59,7 +161,7 @@ html {
 @supports not (backdrop-filter: none) {
   .sticky-nav {
     backdrop-filter: none;
-    @apply bg-opacity-100;
+    background-color: var(--site-surface);
   }
 }
 
@@ -231,3 +333,13 @@ table {
   margin: 0 !important;
 }
 
+@media (max-width: 850px) {
+  .site-frame,
+  .site-corner {
+    display: none;
+  }
+
+  .site-header {
+    border-radius: 0 0 1.75rem 1.75rem;
+  }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thickness = 2, className, style }) => {
   const rawId = useId().replace(/[:]/g, '');
@@ -6,6 +6,19 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
   const svgRef = useRef(null);
   const rootRef = useRef(null);
   const strokeRef = useRef(null);
+  const [isSafari, setIsSafari] = useState(false);
+  const isSafariRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof navigator === 'undefined') return;
+
+    const userAgent = navigator.userAgent;
+    const vendor = navigator.vendor;
+    const safari = /Safari/i.test(userAgent) && /Apple Computer/i.test(vendor) && !/CriOS|Chrome|Chromium|EdgiOS|Edg|Firefox|FxiOS|OPR|OPT|SamsungBrowser|Android/i.test(userAgent);
+
+    isSafariRef.current = safari;
+    setIsSafari(safari);
+  }, []);
 
   const updateAnim = () => {
     const svg = svgRef.current;
@@ -13,8 +26,10 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
     if (!svg || !host) return;
 
     if (strokeRef.current) {
-      strokeRef.current.style.filter = `url(#${filterId})`;
+      strokeRef.current.style.filter = isSafariRef.current ? 'none' : `url(#${filterId})`;
     }
+
+    if (isSafariRef.current) return;
 
     const width = Math.max(1, Math.round(host.clientWidth || host.getBoundingClientRect().width || 0));
     const height = Math.max(1, Math.round(host.clientHeight || host.getBoundingClientRect().height || 0));
@@ -77,9 +92,9 @@ const ElectricBorder = ({ children, color = '#5227FF', speed = 1, chaos = 1, thi
     ['--electric-border-color']: color,
     ['--eb-border-width']: `${thickness}px`
   };
-
+// make !isSafari => remove the ! to enable it again in chrome et all
   return (
-    <div ref={rootRef} className={`electric-border ${className ?? ''}`} style={{ ...vars, ...style }}>
+    <div ref={rootRef} data-simplified={!isSafari ? 'true' : undefined} className={`electric-border ${className ?? ''}`} style={{ ...vars, ...style }}>
       <svg ref={svgRef} className="eb-svg" aria-hidden focusable="false">
         <defs>
           <filter id={filterId} colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">

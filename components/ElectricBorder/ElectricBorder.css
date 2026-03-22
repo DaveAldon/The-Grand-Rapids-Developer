@@ -49,7 +49,8 @@
 }
 
 .eb-glow-1 {
-  border: var(--eb-border-width) solid oklch(from var(--electric-border-color) l c h / 0.6);
+  border: var(--eb-border-width) solid
+    oklch(from var(--electric-border-color) l c h / 0.6);
   opacity: 0.5;
   filter: blur(calc(0.5px + (var(--eb-border-width) * 0.25)));
 }
@@ -65,5 +66,39 @@
   transform: scale(1.08);
   filter: blur(32px);
   opacity: 0.3;
-  background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
+  background: linear-gradient(
+    -30deg,
+    var(--electric-light-color),
+    transparent,
+    var(--electric-border-color)
+  );
+}
+
+.electric-border[data-simplified='true'] .eb-svg {
+  display: none;
+}
+
+.electric-border[data-simplified='true'] .eb-stroke {
+  filter: none !important;
+  border-color: color-mix(
+    in oklab,
+    var(--electric-border-color) 88%,
+    white 12%
+  );
+}
+
+.electric-border[data-simplified='true'] .eb-glow-1 {
+  opacity: 0.35;
+  filter: blur(1px);
+}
+
+.electric-border[data-simplified='true'] .eb-glow-2 {
+  opacity: 0.18;
+  filter: blur(6px);
+}
+
+.electric-border[data-simplified='true'] .eb-background-glow {
+  transform: scale(1.03);
+  filter: blur(14px);
+  opacity: 0.16;
 }
